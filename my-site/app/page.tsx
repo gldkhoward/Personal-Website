@@ -2,9 +2,7 @@
 
 "use client"
 import Sidebar from '../components/navigation';
-import MobileNavbar from '../components/mobilenav';
 import AboutMe from '../components/aboutme';
-import Skills from '../components/skills';
 import Projects from '../components/projects';
 import Contact from '../components/contact';
 import Footer from '@/components/footer';

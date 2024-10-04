@@ -1,5 +1,4 @@
 // components/Contact.js
-import { FaLinkedin, FaGithub, FaEnvelope, FaFilePdf } from 'react-icons/fa';
 
 export default function Contact() {
   return (
