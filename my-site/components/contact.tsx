@@ -1,5 +1,3 @@
-// components/Contact.js
-
 export default function Contact() {
   return (
     <section id="contact" className="py-16 px-4 ">
@@ -7,7 +5,7 @@ export default function Contact() {
         <h2 className="text-3xl font-bold mb-8">Get in Touch</h2>
         
         <p className="mt-4 text-slate-400">
-          I'm always open to discussing new projects or opportunities. Feel free to reach out!
+          I&apos;m always open to discussing new projects or opportunities. Feel free to reach out!
         </p>
       </div>
     </section>

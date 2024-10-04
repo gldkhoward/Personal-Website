@@ -1,5 +1,3 @@
-
-
 export default function AboutMe() {
   return (
     <section id="about" className="py-16 bg-white text-gray-800">
@@ -7,10 +5,10 @@ export default function AboutMe() {
 
         <div className="">
           <p className="text-lg leading-relaxed text-gray-500">
-            Hi! I'm Luke, a Mechatronics Engineering student and Technical Project Manager at DataScope Systems. I love building innovative solutions that enhance productivity and the human experience.
+            Hi! I&apos;m Luke, a Mechatronics Engineering student and Technical Project Manager at DataScope Systems. I love building innovative solutions that enhance productivity and the human experience.
           </p>
           <p className="mt-4 text-lg leading-relaxed text-gray-500">
-            When I'm not coding or working on projects, you can find me hiking or skiing. Let's connect!
+            When I&apos;m not coding or working on projects, you can find me hiking or skiing. Let&apos;s connect!
           </p>
         </div>
       </div>
