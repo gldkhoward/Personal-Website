@@ -16,6 +16,7 @@ export default function Projects() {
       imageUrl: '/images/project-espresso.png',
       technologies: ['Python', 'Machine Learning', 'Embedded Systems'],
       githubUrl: 'https://github.com/yourusername/espresso-classifier',
+      learnMoreUrl: 'https://github.com/gldkhoward'
     },
   ];
 
