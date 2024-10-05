@@ -118,7 +118,7 @@ export default function CoverLetter() {
           I am excited about the opportunity to contribute to {companyName}, a company renowned for its cutting-edge
           projects and commitment to innovation. With my strong technical foundation, leadership experience, and passion
           for ethical engineering, I am confident that I would be a valuable addition to your Graduate Program. I look
-          forward to discussing how my skills and experiences can contribute to {companyName}'s continued success.
+          forward to discussing how my skills and experiences can contribute to {companyName}&apos;s continued success.
         </p>
         <br />
         <p>Thank you for your time and consideration.</p>
