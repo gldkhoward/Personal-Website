@@ -120,7 +120,7 @@ export default function Experience() {
         </ol>
         <div className="mt-12">
           <Link
-            href="/resume.pdf"
+            href="https://raw.githubusercontent.com/gldkhoward/Personal-Website/refs/heads/main/Luke%20Howard%20Resume%20.pdf"
             className="inline-flex items-baseline font-medium leading-tight text-gray-900 hover:text-orange-500 focus-visible:text-orange-500 font-semibold group/link text-base"
             target="_blank"
             rel="noreferrer noopener"
