@@ -2,25 +2,30 @@ import Link from "next/link";
 
 export default function Experience() {
     const experiences = [
-        {
-          date: "Aug 2024 — Present",
-          role: "Technical Project Manager",
-          company: "DataScope Systems",
-          companyUrl: "https://www.datascopesystems.com/",
-          description:
-            "Managed the implementation of multiple DataScope software products across Australia and Australasia, collaborating closely with Laing O'Rourke to support their software usage. Developed self-sufficiency in the role as the sole employee in the region, employing SQL and .NET technologies in an Agile work environment.",
-          technologies: ["SQL", ".NET", "Agile"],
-        },
-        
-        {
-          date: "Feb 2023 — Present",
-          role: "Casual Academic",
-          company: "University of Technology Sydney",
-          companyUrl: "https://www.uts.edu.au",
-          description:
-            "Involved in subject design and event management for various engineering courses. Developed communication and leadership skills, striving to empower students to achieve their best. Focused on creating engaging learning environments and fostering student success.",
-          technologies: ["Educational Leadership", "Event Management"],
-        },
+      {  
+    date: "Aug 2024 — Present",
+    role: "Technical Project Manager",
+    company: "DataScope Systems",
+    companyUrl: "https://www.datascopesystems.com/",
+    description: `
+      Managing software implementation and development across Australia and the Asia Pacific. 
+      Leading feature development based on client feedback and driving product rollouts 
+      with partners like Laing O'Rourke.
+    `,
+    technologies: ["SQL", "T-SQL", ".NET", "Agile"],
+  },
+  {
+    date: "Feb 2023 — Present",
+    role: "Casual Academic",
+    company: "University of Technology Sydney",
+    companyUrl: "https://www.uts.edu.au",
+    description: `
+      Teaching Industrial Robotics and Additive Manufacturing to 300+ students annually. 
+      Mentoring students on project-based learning, achieving top student satisfaction 
+      for subject 41054.
+    `,
+    technologies: ["Educational Leadership", "Event Management", "CAD"],
+  },
         {
           date: "May 2023 — Jan 2024",
           role: "Technical Assistant (Infrastructure and Facilities)",
