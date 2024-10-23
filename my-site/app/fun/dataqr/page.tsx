@@ -4,6 +4,26 @@ import { useState } from 'react';
 import { FaHome } from 'react-icons/fa';
 import Link from 'next/link';
 
+interface NDEFMessage {
+  records: NDEFRecord[];
+}
+
+interface NDEFRecord {
+  data: BufferSource;
+  encoding?: string;
+}
+
+interface NDEFReadingEvent extends Event {
+  message: NDEFMessage;
+}
+
+declare class NDEFReader {
+  scan(): Promise<void>;
+  write(message: string | NDEFMessage): Promise<void>;
+  onreading: (event: NDEFReadingEvent) => void;
+  onerror: (event: Event) => void;
+}
+
 export default function NFCReaderPage() {
   const [tagData, setTagData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -16,18 +36,18 @@ export default function NFCReaderPage() {
     }
 
     try {
-      const ndef = new (window as any).NDEFReader(); // Use dynamic access to avoid TS errors
+      const ndef = new NDEFReader();
       await ndef.scan();
       console.log('NFC scan started successfully.');
 
-      ndef.onreading = (event: any) => {
+      ndef.onreading = (event: NDEFReadingEvent) => {
         const message = event.message.records[0];
         const decodedData = new TextDecoder().decode(message.data);
         setTagData(decodedData);
         console.log('Tag read:', decodedData);
       };
 
-      ndef.onerror = (err: any) => {
+      ndef.onerror = (err: Event) => {
         setError('Failed to read tag. Try again.');
         console.error('Reading error:', err);
       };
