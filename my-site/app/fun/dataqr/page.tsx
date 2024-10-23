@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { FaHome } from 'react-icons/fa';
 import Link from 'next/link';
 
@@ -30,44 +30,62 @@ export default function NFCReaderPage() {
   const [status, setStatus] = useState<string>(''); // Feedback status
   const [tagData, setTagData] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [logs, setLogs] = useState<string[]>([]); // Store logs
+
+  // Helper to add logs dynamically
+  const addLog = (message: string) => {
+    setLogs((prevLogs) => [...prevLogs, `${new Date().toISOString()}: ${message}`]);
+  };
 
   const handleNFCTagRead = async () => {
-    setStatus('Initializing NFC scan...'); // Immediate feedback
+    setStatus('Initializing NFC scan...');
+    addLog('Attempting to start NFC scan.');
 
     // Check if Web NFC is supported
     if (typeof window === 'undefined' || !('NDEFReader' in window)) {
-      setError('NFC is not supported on this device or browser.');
-      setStatus(''); // Clear status
-      console.error('NFC not supported or unavailable.');
+      const errorMsg = 'NFC is not supported on this device or browser.';
+      setError(errorMsg);
+      setStatus('');
+      addLog(errorMsg);
       return;
     }
 
     try {
       const ndef = new NDEFReader();
+      addLog('NDEFReader instance created.');
+
       setStatus('NFC scan started. Please bring a tag close to your device.');
+      addLog('Calling ndef.scan()... Awaiting tag...');
 
       await ndef.scan(); // Start scanning for NFC tags
+      addLog('NFC scan initialized successfully.');
 
       // Handle successful tag read
       ndef.onreading = (event: NDEFReadingEvent) => {
         const message = event.message.records[0];
         const decodedData = new TextDecoder().decode(message.data);
+
         setTagData(decodedData);
         setStatus(`Tag read successfully! Serial: ${event.serialNumber}`);
-        console.log('Tag data:', decodedData);
+        addLog(`Tag read! Serial: ${event.serialNumber}, Data: ${decodedData}`);
       };
 
       // Handle read errors
-      ndef.onreadingerror = () => {
-        setError('Error reading NFC tag. Please try again.');
-        setStatus(''); // Clear status
-        console.error('Reading error occurred.');
+      ndef.onreading = (event) => {
+        const nfcEvent = event as NDEFReadingEvent; // Type casting here
+        const message = nfcEvent.message.records[0];
+        const decodedData = new TextDecoder().decode(message.data);
+      
+        setTagData(decodedData);
+        setStatus(`Tag read successfully! Serial: ${nfcEvent.serialNumber}`);
+        addLog(`Tag read! Serial: ${nfcEvent.serialNumber}, Data: ${decodedData}`);
       };
     } catch (err) {
-      setError('Failed to initialize NFC scan. Permission denied or unsupported.');
-      setStatus(''); // Clear status
-      console.error('Error initializing NFC scan:', err);
-    }
+        const errorMessage = (err as Error).message; // Type narrowing here
+        setError('Failed to initialize NFC scan. Permission denied or unsupported.');
+        setStatus('');
+        addLog(`Initialization error: ${errorMessage}`);
+      }
   };
 
   return (
@@ -111,6 +129,18 @@ export default function NFCReaderPage() {
             <p className="text-red-600">{error}</p>
           </div>
         )}
+
+        {/* Real-Time Logs */}
+        <div className="mt-8 bg-gray-200 p-6 rounded-lg shadow-md w-full max-w-lg">
+          <h2 className="text-lg font-semibold mb-4 text-gray-800">Real-Time Logs</h2>
+          <div className="max-h-64 overflow-y-auto">
+            {logs.map((log, index) => (
+              <p key={index} className="text-sm text-gray-700">
+                {log}
+              </p>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
