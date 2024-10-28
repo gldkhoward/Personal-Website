@@ -1,9 +1,11 @@
 import { ThemeProvider } from "@/components/theme-provider";
-
 import "./globals.css";
 
-
-
+export const metadata = {
+  icons: {
+    icon: '/images/viking.ico',
+  },
+};
 
 export default function RootLayout({
   children,
