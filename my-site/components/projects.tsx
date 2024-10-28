@@ -6,7 +6,7 @@ export default function Projects() {
     {
       title: 'PPE Detection for Construction',
       description:
-        'A custom Neural Network architecture and trained model for end-to-end detection and verification of whether individuals are wearing correct PPE.',
+        'A custom Neural Network architecture and trained model for end-to-end detection and verification of whether operatives are wearing correct PPE.',
       imageUrl: '/images/ppe.png',
       technologies: ['Neural Networks', 'Computer Vision', 'Python'],
       githubUrl: 'https://github.com/gldkhoward/PPE-Yolov5',
@@ -21,16 +21,16 @@ export default function Projects() {
     {
       title: 'GLDK Components',
       description:
-        'A personal project showcasing experiments with web frameworks and tools. Includes useful resources for getting started with web development.',
-      imageUrl: '/images/project-gldk-components.png',
+        'A personal project to experiment and collate my front-end web-development resources. Also serves as a deployment playground where I can experiment and test out new concepts for Web-Development',
+      imageUrl: '/images/gldkcmpts.png',
       technologies: ['React', 'Next.js', 'TypeScript'],
       learnMoreUrl: 'https://github.com/gldkhoward/GldkWebComponents',
     },
     {
       title: 'Uni Scheduler.io',
       description:
-        'An open-source ML timetabling system that generates optimal timetable selections based on user preferences.',
-      imageUrl: '/images/project-uni-scheduler.png',
+        'Ongoing open-source ML timetabling system project that generates optimal timetable selections based on user preferences.',
+      imageUrl: '/images/unisched.png',
       technologies: ['Machine Learning', 'Python', 'Django'],
       githubUrl: 'https://github.com/gldkhoward/UniScheduler.io',
     },
@@ -40,55 +40,58 @@ export default function Projects() {
         'A B2B online marketplace for craft brewers, aimed at streamlining sales, inventory, and integration processes.',
       imageUrl: '/images/gofur.png',
       technologies: ['Next.js', 'PostgreSQL', 'Tailwind CSS'],
-      liveUrl: 'https://www.gofur.com.au/', // New live site URL field
+      liveUrl: 'https://www.gofur.com.au/',
     },
     {
       title: 'Autonomous Steering for Audi R8',
       description:
-        'Developed an autonomous steering system using ROS2 for an Audi R8 in a simulated environment.',
-      imageUrl: '/images/project-audi-r8.png',
-      technologies: ['ROS2', 'Python', 'Computer Vision'],
+        'Developed an autonomous ML steering system using ROS2 for an Audi R8 in a simulated environment.',
+      imageUrl: '/images/audir8.png',
+      technologies: ['ROS2', 'C++', 'Python', 'Computer Vision'],
       githubUrl: 'https://github.com/41012/pfms-2024a-gldkhoward',
     },
     {
       title: 'Machine Learning Espresso Classifier',
       description:
-        'Created a device that classifies espresso coffee using machine learning algorithms and embedded systems.',
-      imageUrl: '/images/project-espresso.png',
+        'Created a device that classifies espresso coffee using machine learning algorithms and a custom embedded sensor systems.',
+      imageUrl: '/images/coffee.png',
       technologies: ['Python', 'Machine Learning', 'Embedded Systems'],
-      githubUrl: 'https://github.com/yourusername/espresso-classifier',
+      githubUrl: 'https://github.com/Nosespresso',
+      learnMoreUrl: 'https://www.nosespresso.online/'
     },
   ];
 
   return (
     <section id="projects" className="py-16 bg-white text-gray-800">
-      <div className="max-w-5xl mx-auto">
-        <h2 className="text-4xl font-bold mb-8 text-orange-400">Projects</h2>
-        <div className="space-y-12">
+      <div className="max-w-7xl mx-auto ">
+        <h2 className="text-4xl font-bold mb-12 text-orange-400">Projects</h2>
+        <div className="space-y-16">
           {projects.map((project, index) => (
-            <div key={index} className="flex flex-col md:flex-row space-y-8 md:space-x-16">
-              <div className="md:w-1/2">
-                <Image
-                  src={project.imageUrl}
-                  alt={project.title}
-                  width={600}
-                  height={400}
-                  className="rounded-lg shadow-lg hover:shadow-orange-300 transition-shadow duration-300"
-                />
+            <div key={index} className="flex flex-col md:flex-row items-center gap-12">
+              <div className="md:w-1/2 flex justify-center">
+                <div className="relative w-full aspect-[4/3] max-w-lg">
+                  <Image
+                    src={project.imageUrl}
+                    alt={project.title}
+                    fill
+                    className="object-cover rounded-lg shadow-lg hover:shadow-orange-300 transition-shadow duration-300"
+                  />
+                </div>
               </div>
-              <div className="md:w-1/2">
-                <h3 className="text-2xl font-bold text-orange-400">{project.title}</h3>
-                <p className="mt-2 text-gray-500">{project.description}</p>
-                <p className="mt-2 text-gray-500">
+              <div className="md:w-1/2 flex flex-col justify-center max-w-lg">
+                <h3 className="text-2xl font-bold text-orange-400 mb-4">{project.title}</h3>
+                <p className="text-gray-500 mb-4">{project.description}</p>
+                <p className="text-gray-500 mb-6">
                   <strong>Technologies:</strong> {project.technologies.join(', ')}
                 </p>
-                <div className="mt-4 space-x-4">
+                <div className="flex gap-4 flex-wrap">
                   {project.githubUrl && (
                     <Button asChild>
                       <a
                         href={project.githubUrl}
                         target="_blank"
-                        className="hover:text-orange-400"
+                        rel="noopener noreferrer"
+                        className="hover:text-orange-400 transition-colors"
                       >
                         GitHub
                       </a>
@@ -96,14 +99,24 @@ export default function Projects() {
                   )}
                   {project.learnMoreUrl && (
                     <Button asChild>
-                      <a href={project.learnMoreUrl} target="_blank" className="hover:text-orange-400">
+                      <a
+                        href={project.learnMoreUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-orange-400 transition-colors"
+                      >
                         Learn More
                       </a>
                     </Button>
                   )}
                   {project.liveUrl && (
                     <Button asChild>
-                      <a href={project.liveUrl} target="_blank" className="hover:text-orange-400">
+                      <a
+                        href={project.liveUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="hover:text-orange-400 transition-colors"
+                      >
                         Live Site
                       </a>
                     </Button>

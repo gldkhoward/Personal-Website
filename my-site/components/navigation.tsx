@@ -17,14 +17,14 @@ export default function Sidebar() {
       {/* Main navigation links */}
       <nav className="mt-8 space-y-4 flex flex-col flex-grow justify-items-start">
         <a href="#about" className="hover:text-orange-400 text-lg">About</a>
-        <a href="#skills" className="hover:text-orange-400 text-lg">Skills</a>
+        <a href="#experience" className="hover:text-orange-400 text-lg">Experience</a>
         <a href="#projects" className="hover:text-orange-400 text-lg">Projects</a>
         <a href="#contact" className="hover:text-orange-400 text-lg">Contact</a>
       </nav>
 
       {/* Separate section for Reflections and Cover Letter */}
       <div className="mt-12 pt-4 ">
-        <h4 className="text-lg font-semibold text-gray-400">Other Documents</h4>
+        <h4 className="text-lg font-semibold text-gray-400">Other Documents (For a Uni Assignment..)</h4>
         <nav className="mt-4 space-y-4 flex flex-col justify-items-start">
           <a href="/reflections" className="hover:text-orange-400 text-lg">Reflections</a>
           <a href="/cover-letter" className="hover:text-orange-400 text-lg">Cover Letter</a>
@@ -39,7 +39,7 @@ export default function Sidebar() {
         <a href="https://github.com/gldkhoward" className="hover:text-orange-400">
           <FaGithub size={24} />
         </a>
-        <a href="mailto:youremail@example.com" className="hover:text-orange-400">
+        <a href="mailto:ekulhoward@hotmail.com" className="hover:text-orange-400">
           <FaEnvelope size={24} />
         </a>
       </div>

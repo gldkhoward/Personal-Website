@@ -22,16 +22,16 @@ export default function CoverLetter() {
               type="text"
               value={companyName}
               onChange={(e) => setCompanyName(e.target.value)}
-              className="mt-1 p-2 w-full border rounded shadow-sm"
+              className="mt-1 p-2 w-full border rounded shadow-sm bg-white"
             />
           </div>
           <div>
-            <label className="block text-sm font-medium text-gray-600">Hiring Manager:</label>
+            <label className="block text-sm font-medium text-gray-600 ">Hiring Manager:</label>
             <input
               type="text"
               value={hiringManager}
               onChange={(e) => setHiringManager(e.target.value)}
-              className="mt-1 p-2 w-full border rounded shadow-sm"
+              className="mt-1 p-2 w-full border rounded shadow-sm bg-white"
             />
           </div>
           <div>
@@ -40,7 +40,7 @@ export default function CoverLetter() {
               type="text"
               value={companyAddress}
               onChange={(e) => setCompanyAddress(e.target.value)}
-              className="mt-1 p-2 w-full border rounded shadow-sm"
+              className="mt-1 p-2 w-full border rounded shadow-sm bg-white"
             />
           </div>
           <div>
@@ -49,7 +49,7 @@ export default function CoverLetter() {
               type="text"
               value={userCity}
               onChange={(e) => setUserCity(e.target.value)}
-              className="mt-1 p-2 w-full border rounded shadow-sm"
+              className="mt-1 p-2 w-full border rounded shadow-sm bg-white"
             />
           </div>
           <div>
@@ -58,7 +58,7 @@ export default function CoverLetter() {
               type="text"
               value={date}
               onChange={(e) => setDate(e.target.value)}
-              className="mt-1 p-2 w-full border rounded shadow-sm"
+              className="mt-1 p-2 w-full border rounded shadow-sm bg-white"
             />
           </div>
         </div>

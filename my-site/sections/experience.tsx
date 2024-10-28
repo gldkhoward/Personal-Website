@@ -12,7 +12,7 @@ export default function Experience() {
       Leading feature development based on client feedback and driving product rollouts 
       with partners like Laing O'Rourke.
     `,
-    technologies: ["SQL", "T-SQL", ".NET", "Agile"],
+    technologies: ["SQL", "Python", ".NET", "React", "Agile"],
   },
   {
     date: "Feb 2023 — Present",
@@ -20,32 +20,32 @@ export default function Experience() {
     company: "University of Technology Sydney",
     companyUrl: "https://www.uts.edu.au",
     description: `
-      Teaching Industrial Robotics and Additive Manufacturing to 300+ students annually. 
-      Mentoring students on project-based learning, achieving top student satisfaction 
-      for subject 41054.
+      Teaching Industrial Robotics, Additive Manufacturing and more to 300+ students annually. 
+      Mentoring students on project-based learning, achieving a record breaking student satisfaction 
+      result in the Engineering Faculty (Subject 41054) in Spring 2023.
     `,
-    technologies: ["Educational Leadership", "Event Management", "CAD"],
+    technologies: ["Educational Leadership", "C++", "MATLAB"],
+  },
+  {
+    date: "Nov 2023 — Mar 2024",
+    role: "Software Engineer",
+    company: "Ergosphere.ai",
+    companyUrl: "https://ergosphere.ai",
+    description:
+      "Contributed to software development projects focusing on artificial intelligence applications. Gained hands-on experience in programming and software development practices while collaborating with a team to deliver innovative solutions.",
+    technologies: ["Python", "Machine Learning", "Full-Stack Software Development"],
   },
         {
           date: "May 2023 — Jan 2024",
-          role: "Technical Assistant (Infrastructure and Facilities)",
+          role: "Technical Assistant",
           company: "University of Technology Sydney",
           companyUrl: "https://www.uts.edu.au",
           description:
             "Maintained UTS Engineering infrastructure services, managing building access and induction systems. Streamlined stockkeeping and record keeping for faculty assets, enhancing operational efficiency and supporting faculty needs.",
-          technologies: ["Infrastructure Management", "Record Keeping"],
+          technologies: ["Infrastructure Management", "Compliance and Safety", "Process Development"],
         },
         {
-          date: "Nov 2023 — Mar 2024",
-          role: "Software Engineer",
-          company: "Ergosphere.ai",
-          companyUrl: "https://ergosphere.ai",
-          description:
-            "Contributed to software development projects focusing on artificial intelligence applications. Gained hands-on experience in programming and software development practices while collaborating with a team to deliver innovative solutions.",
-          technologies: ["Artificial Intelligence", "Software Development"],
-        },
-        {
-            date: "Oct 2023 — Present",
+            date: "Oct 2023 — Oct 2024",
             role: "Director",
             company: "ActivateUTS",
             companyUrl: "https://www.activateuts.com.au/",
@@ -57,11 +57,12 @@ export default function Experience() {
   return (
     <section
       id="experience"
-      className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24"
+      className="mb-16 scroll-mt-16 md:mb-24 lg:mb-36 lg:scroll-mt-24 py-16"
       aria-label="Work experience"
     >
       
       <div>
+      <h2 className="text-4xl font-bold mb-12 text-orange-400">Experience</h2>
         <ol className="group/list">
           {experiences.map((exp, index) => (
             <li key={index} className="mb-12">
@@ -83,7 +84,7 @@ export default function Experience() {
                         rel="noreferrer noopener"
                         aria-label={`${exp.role} at ${exp.company}`}
                       >
-                        <span>{exp.role} · </span>
+                        <span>{exp.role} -&nbsp;</span>
                         <span className="flex flex-row">
                            {exp.company}
                           <svg
