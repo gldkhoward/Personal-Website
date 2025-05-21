@@ -21,6 +21,9 @@ export const metadata: Metadata = {
   keywords: ["engineer", "AI", "robotics", "web development", "machine learning", "portfolio", "Luke Howard"],
   authors: [{ name: "Luke Howard" }],
   creator: "Luke Howard",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
