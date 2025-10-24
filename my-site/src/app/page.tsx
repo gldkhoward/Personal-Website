@@ -32,7 +32,18 @@ export default function Home() {
   const [showPrompt, setShowPrompt] = useState<boolean>(false);
   const [currentStep, setCurrentStep] = useState<TerminalStep>('initial');
   const [promptPrefix, setPromptPrefix] = useState<string>('user@interweb:~$ ');
+  const [commandHistory, setCommandHistory] = useState<string[]>([]);
+  const [historyIndex, setHistoryIndex] = useState<number>(-1);
   const terminalRef = useRef<HTMLDivElement>(null);
+
+  // Define available commands
+  const availableCommands = [
+    '1', '2', '3', '4',
+    'portfolio', 'blog', 'about', 'showcase',
+    './portfolio', './blog', './about', './showcase',
+    'cd portfolio', 'cd blog', 'cd about', 'cd showcase',
+    'contact', 'clear', 'help', 'menu', 'back', 'exit', 'logout', 'ls'
+  ];
 
   // Function to add a command with typewriter effect - wrapped in useCallback
   const typeCommand = useCallback(async (command: string, prefix: string = promptPrefix, delay: number = 80): Promise<void> => {
@@ -84,18 +95,10 @@ export default function Home() {
         // Start with the interweb terminal
         await typeCommand('ssh luke@lukehoward.com.au');
         await addOutput([
-          'Connecting...',
-          'Connection established.',
+          'connecting...',
+          'connection established.',
           '',
-          '═════════════════════════════════════════',
-          '  Luke Howard | Engineer & Creative',
-          '═════════════════════════════════════════',
-          '',
-          '• Currently: Coding from Sydney, AU',
-          `• Last visitor: ${new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' })} @ ${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}`,
-          '• Current project: Interactive Portfolio System',
-          '',
-          'Type "help" for available commands.',
+          
           ''
         ]);
         // Update the prompt to reflect we're now in Luke's workspace
@@ -104,11 +107,15 @@ export default function Home() {
       } else if (currentStep === 'whoami') {
         await typeCommand('whoami', 'luke@lukehoward.com.au:~$ ');
         await addOutput([
-          'Luke Howard | Cross-Disciplinary Engineer',
+          '═════════════════════════════════════════',
+          '  Luke Howard | Engineer & Creative',
+          '═════════════════════════════════════════',
           '',
-          'Engineer with a passion for AI, web development, and robotics. ',
-          'Experience building and managing large scale digital solutions. ',
-          'Passionate about clean code and user-centered design.',
+          '• currently: Coding from billabong, AU',
+          `• last visitor: ${new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' })} @ ${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}`,
+          '• current project: Lecxa',
+          '',
+          'type "help" for available commands.',
           ''
         ]);
         setCurrentStep('runPortfolio');
@@ -118,7 +125,7 @@ export default function Home() {
         await addOutput([
           'Initializing navigation...',
           '',
-          'Welcome to my digital workspace',
+          'Welcome',
           '',
           'What would you like to explore?',
           '1. Portfolio - Development projects',
@@ -179,9 +186,79 @@ export default function Home() {
 
   // Handle user input
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>): void => {
+    // Tab completion
+    if (e.key === 'Tab' && showPrompt) {
+      e.preventDefault();
+      const input = currentInput.toLowerCase();
+      
+      // Find matching commands
+      const matches = availableCommands.filter(cmd => 
+        cmd.toLowerCase().startsWith(input)
+      );
+      
+      if (matches.length === 1) {
+        // Single match - complete it
+        setCurrentInput(matches[0]);
+      } else if (matches.length > 1) {
+        // Multiple matches - show them and complete common prefix
+        const commonPrefix = matches.reduce((prefix, cmd) => {
+          let i = 0;
+          while (i < prefix.length && i < cmd.length && 
+                 prefix[i].toLowerCase() === cmd[i].toLowerCase()) {
+            i++;
+          }
+          return cmd.substring(0, i);
+        });
+        
+        // Update input to common prefix if it's longer than current input
+        if (commonPrefix.length > input.length) {
+          setCurrentInput(commonPrefix);
+        } else {
+          // Show all matches
+          addOutput(matches.join('  '));
+        }
+      }
+      return;
+    }
+    
+    // Arrow up - previous command in history
+    if (e.key === 'ArrowUp' && showPrompt) {
+      e.preventDefault();
+      if (commandHistory.length > 0) {
+        const newIndex = historyIndex === -1 
+          ? commandHistory.length - 1 
+          : Math.max(0, historyIndex - 1);
+        setHistoryIndex(newIndex);
+        setCurrentInput(commandHistory[newIndex]);
+      }
+      return;
+    }
+    
+    // Arrow down - next command in history
+    if (e.key === 'ArrowDown' && showPrompt) {
+      e.preventDefault();
+      if (historyIndex !== -1) {
+        const newIndex = historyIndex + 1;
+        if (newIndex >= commandHistory.length) {
+          setHistoryIndex(-1);
+          setCurrentInput('');
+        } else {
+          setHistoryIndex(newIndex);
+          setCurrentInput(commandHistory[newIndex]);
+        }
+      }
+      return;
+    }
+    
     if (e.key === 'Enter' && showPrompt) {
       e.preventDefault();
       const input = currentInput.trim().toLowerCase();
+      
+      // Add to command history if not empty and not duplicate of last command
+      if (input !== '' && (commandHistory.length === 0 || commandHistory[commandHistory.length - 1] !== input)) {
+        setCommandHistory(prev => [...prev, input]);
+      }
+      setHistoryIndex(-1);
       
       // Show the command with current prefix
       setTerminalContent(prev => [...prev, { 
@@ -192,16 +269,16 @@ export default function Home() {
       setCurrentInput('');
       
       // Process commands
-      if (input === '1' || input === 'portfolio') {
+      if (input === '1' || input === 'portfolio' || input === './portfolio' || input == 'cd portfolio') {
         window.open('/portfolio', '_blank');
         addOutput('Opening portfolio in a new tab...');
-      } else if (input === '2' || input === 'blog') {
+      } else if (input === '2' || input === 'blog' || input === './blog' || input === 'cd blog') {
         window.open('/blog', '_blank');
         addOutput('Opening blog in a new tab...');
-      } else if (input === '3' || input === 'about') {
+      } else if (input === '3' || input === 'about' || input === './about' || input === 'cd about') {
         window.open('/about', '_blank');
         addOutput('Opening about page in a new tab...');
-      } else if (input === '4' || input === 'showcase') {
+      } else if (input === '4' || input === 'showcase' || input === './showcase' || input === 'cd showcase') {
         window.open('/showcase', '_blank');
         addOutput('Opening creative showcase in a new tab...');
       } else if (input === 'clear') {
@@ -218,7 +295,9 @@ export default function Home() {
           'clear - Clear terminal',
           'menu - Return to main menu',
           'exit - End session',
-          'help - Show this help message'
+          'help - Show this help message',
+          '',
+          'TIP: Press Tab for autocomplete, ↑/↓ for command history'
         ]);
       } else if (input === 'ls') {
         addOutput([

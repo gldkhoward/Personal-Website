@@ -13,8 +13,8 @@ export default function Sidebar() {
         className="rounded-full  border-orange-500 shadow-lg"
       />
       <h1 className="text-5xl font-bold mb-4 text-orange-400 pt-4">Luke Howard</h1>
-      <h3 className="text-xl font-semibold text-gray-500 mt-2">Software and Mechatronics Engineer</h3>
-      
+      <h3 className="text-xl font-semibold text-gray-500 mt-2">Founder</h3>
+      <h3 className="text-xl font-semibold text-gray-500 mt-2">Robotics/Software Engineer</h3>
       {/* Main navigation links */}
       <nav className="mt-8 space-y-4 flex flex-col flex-grow justify-items-start">
         <a href="#about" className="hover:text-orange-400 text-lg">About</a>

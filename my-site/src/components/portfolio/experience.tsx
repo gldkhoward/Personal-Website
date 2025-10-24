@@ -5,8 +5,30 @@ import { ExternalLink } from "lucide-react";
 
 export default function Experience() {
     const experiences = [
-      {  
-    date: "Aug 2024 — Present",
+  {
+    date: "Aug 2025 — Present",
+    role: "Co-Founder & CTO",
+    company: "Lecxa",
+    companyUrl: "https://www.lecxa.com.au/",
+    description: `
+      Building a frictionless inventory management system for small to medium businesses.
+    `,
+    technologies: ["React", "Next.js", "TypeScript", "PostgreSQL", "AWS"],
+  },  
+  {
+    date: "Feb 2023 — Present",
+    role: "Casual Academic",
+    company: "University of Technology Sydney",
+    companyUrl: "https://www.uts.edu.au/about/faculties/engineering-and-information-technology/mechanical-and-mechatronic-engineering",
+    description: `
+      Teaching Industrial Robotics, Additive Manufacturing and more to 300+ students annually. 
+      Mentoring students on project-based learning, achieving a record breaking student satisfaction 
+      result in the Engineering Faculty (Subject 41054) in Spring 2023.
+    `,
+    technologies: ["Educational Leadership", "C++", "MATLAB"],
+  },
+  {  
+    date: "Aug 2024 — Aug 2025",
     role: "Technical Project Manager",
     company: "DataScope Systems",
     companyUrl: "https://www.datascopesystems.com/",
@@ -16,18 +38,6 @@ export default function Experience() {
       with partners like Laing O'Rourke.
     `,
     technologies: ["SQL", "Python", ".NET", "React", "Agile"],
-  },
-  {
-    date: "Feb 2023 — Present",
-    role: "Casual Academic",
-    company: "University of Technology Sydney",
-    companyUrl: "https://www.uts.edu.au",
-    description: `
-      Teaching Industrial Robotics, Additive Manufacturing and more to 300+ students annually. 
-      Mentoring students on project-based learning, achieving a record breaking student satisfaction 
-      result in the Engineering Faculty (Subject 41054) in Spring 2023.
-    `,
-    technologies: ["Educational Leadership", "C++", "MATLAB"],
   },
   {
     date: "Nov 2023 — Mar 2024",
