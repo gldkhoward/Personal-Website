@@ -19,7 +19,7 @@ export default function Projects() {
     {
       title: 'Uni Scheduler.io',
       description:
-        'Ongoing open-source ML timetabling system project that generates optimal timetable selections based on user preferences. Sadly we got shutdown by unis ;(',
+        'Ongoing open-source ML timetabling system project that generates optimal timetable selections based on user preferences. ',
       imageUrl: '/images/unisched.png',
       technologies: ['Machine Learning', 'Python', 'Django'],
       githubUrl: 'https://github.com/gldkhoward/UniScheduler.io',
