@@ -21,9 +21,7 @@ export default function Experience() {
     company: "University of Technology Sydney",
     companyUrl: "https://www.uts.edu.au/about/faculties/engineering-and-information-technology/mechanical-and-mechatronic-engineering",
     description: `
-      Teaching Industrial Robotics, Additive Manufacturing and more to 300+ students annually. 
-      Mentoring students on project-based learning, achieving a record breaking student satisfaction 
-      result in the Engineering Faculty (Subject 41054) in Spring 2023.
+      I learn through teaching. This started early in high school, helping other students understand concepts. Off the back of some impressive results and involvement with subjects I got my first teaching contract! Since then I've taught across 8 different subjects at UTS, over 500 students and achieved the highest student satisfaction rate for a subject with the FEIT faculty. 
     `,
     technologies: ["Educational Leadership", "C++", "MATLAB"],
   },
@@ -33,9 +31,7 @@ export default function Experience() {
     company: "DataScope Systems",
     companyUrl: "https://www.datascopesystems.com/",
     description: `
-      Managing software implementation and development across Australia and the Asia Pacific. 
-      Leading feature development based on client feedback and driving product rollouts 
-      with partners like Laing O'Rourke.
+      This was an interesting side quest. During my final year I was approached about an oppurtunity with DataScope, they needed a quick learner to onboard and kickstart some projects using their software in Australia. Next thing I know I'm in Chester, UK for over a month, before coming back and running implimentation and support for APAC clients. As the only employee in APAC, I'll be honest, it was lonely af, I had to make alot of big decisions while managers and collegues were asleep.
     `,
     technologies: ["SQL", "Python", ".NET", "React", "Agile"],
   },
@@ -45,8 +41,16 @@ export default function Experience() {
     company: "Ergosphere.ai",
     companyUrl: "https://ergosphere.ai",
     description:
-      "Contributed to software development projects focusing on artificial intelligence applications. Gained hands-on experience in programming and software development practices while collaborating with a team to deliver innovative solutions.",
+      "This was my first professional exposure to software development and something that got me hooked on it. As a mechatronics engineer you get a taste of alot of disciplines, this expereince made me realise I was definitely a software-mechatronics engineer. It peaked an interest in machine learning and led to me selecting enrolling in a Computer Science sub-major in Data Analytics and machine learning to further this interest",
     technologies: ["Python", "Machine Learning", "Full-Stack Software Development"],
+  },
+  {
+    date: "Oct 2023 — Oct 2024",
+    role: "Director",
+    company: "ActivateUTS",
+    companyUrl: "https://www.activateuts.com.au/",
+    description: "I am one of the BIGGEST advocates for student experience/involvement at university. ActivateUTS is the social lifeblood of UTS, a not-for-profit organisation that looks after on campus events, activities, societys and facilities. I was fortunate enough to be elected as a Director to help manage the organisation and help steer policy and direction in alignment with what students wanted.",
+    technologies: [],
   },
         {
           date: "May 2023 — Jan 2024",
@@ -54,17 +58,10 @@ export default function Experience() {
           company: "University of Technology Sydney",
           companyUrl: "https://www.uts.edu.au",
           description:
-            "Maintained UTS Engineering infrastructure services, managing building access and induction systems. Streamlined stockkeeping and record keeping for faculty assets, enhancing operational efficiency and supporting faculty needs.",
-          technologies: ["Infrastructure Management", "Compliance and Safety", "Process Development"],
+            "Ever wondered how/who organises desks, equipment, supplies and card access within an engineering faculty, turns out a team of 3 people (of which I was one for this stint). I worked as a technical team member to organise and maintain lab/general spaces for UTS FEIT. If you wanted card access for a lab or space, you emailed our team (ngl it was weird doing this as a ft student).",
+          technologies: ["Infrastructure Management", "Compliance and Safety", "Process Development", "PowerBI"],
         },
-        {
-            date: "Oct 2023 — Oct 2024",
-            role: "Director",
-            company: "ActivateUTS",
-            companyUrl: "https://www.activateuts.com.au/",
-            description: "Volunteer role; details not applicable.",
-            technologies: [],
-          },
+        
       ];
 
   return (
@@ -127,7 +124,7 @@ export default function Experience() {
             </li>
           ))}
         </ol>
-        <div className="mt-12">
+        {/* <div className="mt-12">
           <Link
             href="https://raw.githubusercontent.com/gldkhoward/Personal-Website/refs/heads/main/Luke%20Howard%20Resume%20.pdf"
             className="inline-flex items-center font-medium leading-tight text-foreground hover:text-primary focus-visible:text-primary font-semibold group/link text-base"
@@ -138,7 +135,7 @@ export default function Experience() {
             <span>View Full Résumé</span>
             <ExternalLink className="ml-1 h-5 w-5" />
           </Link>
-        </div>
+        </div> */}
       </div>
     </section>
   );
