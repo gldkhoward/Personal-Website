@@ -1,10 +1,75 @@
 "use client"
 
+import { useState, useEffect, useRef } from 'react';
 import Link from "next/link";
 import { ExternalLink } from "lucide-react";
 
 export default function Experience() {
-    const experiences = [
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const experienceRefs = useRef<(HTMLLIElement | null)[]>([]);
+
+  // Detect if device is mobile
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
+    };
+    
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
+
+  // Intersection Observer for mobile scroll-triggered animations
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const index = parseInt(entry.target.getAttribute('data-index') || '0');
+          
+          if (entry.isIntersecting) {
+            // Find the experience item closest to center of viewport
+            const rect = entry.boundingClientRect;
+            const viewportCenter = window.innerHeight / 2;
+            const itemCenter = rect.top + rect.height / 2;
+            const distanceFromCenter = Math.abs(itemCenter - viewportCenter);
+            
+            // Only trigger if this item is closest to center
+            const isClosestToCenter = experienceRefs.current.every((ref, idx) => {
+              if (!ref || idx === index) return true;
+              const refRect = ref.getBoundingClientRect();
+              const refCenter = refRect.top + refRect.height / 2;
+              const refDistance = Math.abs(refCenter - viewportCenter);
+              return distanceFromCenter <= refDistance;
+            });
+            
+            if (isClosestToCenter) {
+              setHoveredIndex(index);
+            }
+          } else {
+            // Only clear if this was the active item
+            if (hoveredIndex === index) {
+              setHoveredIndex(null);
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.3,
+        rootMargin: '-20% 0px -20% 0px'
+      }
+    );
+
+    experienceRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, [isMobile, hoveredIndex]);
+
+  const experiences = [
   {
     date: "Aug 2025 — Present",
     role: "Co-Founder & CTO",
@@ -75,11 +140,26 @@ export default function Experience() {
       <h2 className="text-4xl font-bold mb-12 text-primary">Experience</h2>
         <ol className="group/list">
           {experiences.map((exp, index) => (
-            <li key={index} className="mb-12">
-              <div className="group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50">
-                <div className="absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block lg:group-hover:bg-muted lg:group-hover:shadow-md"></div>
+            <li 
+              key={index} 
+              ref={(el) => { experienceRefs.current[index] = el; }}
+              data-index={index}
+              className="mb-12"
+            >
+              <div 
+                className={`group relative grid pb-1 transition-all sm:grid-cols-8 sm:gap-8 md:gap-4 lg:hover:!opacity-100 lg:group-hover/list:opacity-50 ${
+                  hoveredIndex === index ? 'opacity-100' : ''
+                }`}
+                onMouseEnter={() => !isMobile && setHoveredIndex(index)}
+                onMouseLeave={() => !isMobile && setHoveredIndex(null)}
+              >
+                <div className={`absolute -inset-x-4 -inset-y-4 z-0 hidden rounded-md transition motion-reduce:transition-none lg:-inset-x-6 lg:block ${
+                  hoveredIndex === index ? 'bg-muted shadow-md' : ''
+                }`}></div>
                 
-                <div className="absolute top-0 right-0 z-20 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className={`absolute top-0 right-0 z-20 p-1 transition-opacity ${
+                  hoveredIndex === index ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
+                }`}>
                   <Link href={exp.companyUrl} target="_blank" rel="noreferrer noopener" aria-label={`Open ${exp.company} website`}>
                     <ExternalLink className="h-5 w-5 text-primary" />
                   </Link>

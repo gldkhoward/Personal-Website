@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { ExternalLink, Github, Info } from 'lucide-react';
@@ -85,6 +85,68 @@ export default function Projects() {
   ];
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
+  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Detect if device is mobile
+  useEffect(() => {
+    const checkIsMobile = () => {
+      setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
+    };
+    
+    checkIsMobile();
+    window.addEventListener('resize', checkIsMobile);
+    return () => window.removeEventListener('resize', checkIsMobile);
+  }, []);
+
+  // Intersection Observer for mobile scroll-triggered animations
+  useEffect(() => {
+    if (!isMobile) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          const index = parseInt(entry.target.getAttribute('data-index') || '0');
+          
+          if (entry.isIntersecting) {
+            // Find the card closest to center of viewport
+            const rect = entry.boundingClientRect;
+            const viewportCenter = window.innerHeight / 2;
+            const cardCenter = rect.top + rect.height / 2;
+            const distanceFromCenter = Math.abs(cardCenter - viewportCenter);
+            
+            // Only trigger if this card is closest to center
+            const isClosestToCenter = cardRefs.current.every((ref, idx) => {
+              if (!ref || idx === index) return true;
+              const refRect = ref.getBoundingClientRect();
+              const refCenter = refRect.top + refRect.height / 2;
+              const refDistance = Math.abs(refCenter - viewportCenter);
+              return distanceFromCenter <= refDistance;
+            });
+            
+            if (isClosestToCenter) {
+              setHoveredIndex(index);
+            }
+          } else {
+            // Only clear if this was the active card
+            if (hoveredIndex === index) {
+              setHoveredIndex(null);
+            }
+          }
+        });
+      },
+      {
+        threshold: 0.3,
+        rootMargin: '-20% 0px -20% 0px'
+      }
+    );
+
+    cardRefs.current.forEach((ref) => {
+      if (ref) observer.observe(ref);
+    });
+
+    return () => observer.disconnect();
+  }, [isMobile, hoveredIndex]);
 
   return (
     <section id="projects" className="py-16">
@@ -129,9 +191,11 @@ export default function Projects() {
                 
                 {/* Project Card */}
                 <motion.div
+                  ref={(el) => { cardRefs.current[index] = el; }}
+                  data-index={index}
                   className="group relative bg-card rounded-lg overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-500"
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
+                  onMouseEnter={() => !isMobile && setHoveredIndex(index)}
+                  onMouseLeave={() => !isMobile && setHoveredIndex(null)}
                   animate={{
                     height: isHovered ? '368px' : '320px',
                     y: isHovered ? -48 : 0,

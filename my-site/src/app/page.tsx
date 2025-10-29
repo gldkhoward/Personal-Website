@@ -129,8 +129,8 @@ export default function Home() {
           '',
           'What would you like to explore?',
           '1. Portfolio - Development projects',
-          '2. Blog - Technical articles {In Development}',
-          '3. About - Professional background {In Development}',
+          '2. Blog - Technical articles',
+          '3. About - Professional background',
           '4. Showcase - Creative work {In Development}'
         ]);
         setShowPrompt(true);
@@ -273,7 +273,7 @@ export default function Home() {
         window.open('/portfolio', '_blank');
         addOutput('Opening portfolio in a new tab...');
       } else if (input === '2' || input === 'blog' || input === './blog' || input === 'cd blog') {
-        window.open('/blog', '_blank');
+        window.open('https://lukehowardau.substack.com/', '_blank');
         addOutput('Opening blog in a new tab...');
       } else if (input === '3' || input === 'about' || input === './about' || input === 'cd about') {
         window.open('/about', '_blank');
@@ -288,8 +288,8 @@ export default function Home() {
           'Available commands:',
           '',
           '1 or portfolio - Open portfolio in new tab',
-          '2 or blog - Open blog in new tab {In Development}',
-          '3 or about - Open about page in new tab {In Development}',
+          '2 or blog - Open blog in new tab',
+          '3 or about - Open about page in new tab',
           '4 or showcase - Open showcase in new tab {In Development}',
           'contact - Open contact page in new tab',
           'clear - Clear terminal',
