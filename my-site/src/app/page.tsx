@@ -16,8 +16,7 @@ type TerminalStep =
   | 'waitingForInput'
   | 'portfolio'
   | 'blog'
-  | 'about'
-  | 'showcase';
+  | 'about';
 
 // Custom type for styled terminal lines
 interface StyledTerminalLine {
@@ -38,11 +37,11 @@ export default function Home() {
 
   // Define available commands
   const availableCommands = [
-    '1', '2', '3', '4',
-    'portfolio', 'blog', 'about', 'showcase',
-    './portfolio', './blog', './about', './showcase',
-    'cd portfolio', 'cd blog', 'cd about', 'cd showcase',
-    'contact', 'clear', 'help', 'menu', 'back', 'exit', 'logout', 'ls'
+    '1', '2', '3',
+    'portfolio', 'blog', 'about',
+    './portfolio', './blog', './about',
+    'cd portfolio', 'cd blog', 'cd about',
+    'clear', 'help', 'exit', 'ls'
   ];
 
   // Function to add a command with typewriter effect - wrapped in useCallback
@@ -130,8 +129,7 @@ export default function Home() {
           'What would you like to explore?',
           '1. Portfolio - Development projects',
           '2. Blog - Technical articles',
-          '3. About - Professional background',
-          '4. Showcase - Creative work {In Development}'
+          '3. About - Professional background'
         ]);
         setShowPrompt(true);
         setCurrentStep('waitingForInput');
@@ -160,15 +158,6 @@ export default function Home() {
           'Opening in new tab.'
         ]);
         window.open('/about', '_blank');
-        setShowPrompt(true);
-        setCurrentStep('waitingForInput');
-      } else if (currentStep === 'showcase') {
-        // This section is now simplified since we're redirecting to external pages
-        await addOutput([
-          'Redirecting to showcase page...',
-          'Opening in new tab.'
-        ]);
-        window.open('/showcase', '_blank');
         setShowPrompt(true);
         setCurrentStep('waitingForInput');
       }
@@ -278,9 +267,6 @@ export default function Home() {
       } else if (input === '3' || input === 'about' || input === './about' || input === 'cd about') {
         window.open('/about', '_blank');
         addOutput('Opening about page in a new tab...');
-      } else if (input === '4' || input === 'showcase' || input === './showcase' || input === 'cd showcase') {
-        window.open('/showcase', '_blank');
-        addOutput('Opening creative showcase in a new tab...');
       } else if (input === 'clear') {
         setTerminalContent([]);
       } else if (input === 'help') {
@@ -290,12 +276,10 @@ export default function Home() {
           '1 or portfolio - Open portfolio in new tab',
           '2 or blog - Open blog in new tab',
           '3 or about - Open about page in new tab',
-          '4 or showcase - Open showcase in new tab {In Development}',
-          'contact - Open contact page in new tab',
           'clear - Clear terminal',
-          'menu - Return to main menu',
           'exit - End session',
           'help - Show this help message',
+          'ls - List available files',
           '',
           'TIP: Press Tab for autocomplete, ↑/↓ for command history'
         ]);
@@ -304,18 +288,10 @@ export default function Home() {
           'portfolio/',
           'blog/',
           'about.md',
-          'showcase/',
-          'contact.txt',
           'projects.json',
           'resume.pdf'
         ]);
-      } else if (input === 'contact') {
-        window.open('/contact', '_blank');
-        addOutput('Opening contact page in a new tab...');
-      } else if (input === 'back' || input === 'menu') {
-        setShowPrompt(false);
-        setCurrentStep('runPortfolio');
-      } else if (input === 'exit' || input === 'logout') {
+      } else if (input === 'exit') {
         addOutput([
           'Saving session state...',
           'Closing secure connection...',

@@ -16,7 +16,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Luke Howard | Engineer & Creative",
+  title: "Luke Howard | Engineer + Creative",
   description: "Cross-disciplinary engineer passionate about AI, web development, and robotics. Explore my portfolio showcasing projects in machine learning, robotics, and full-stack development.",
   keywords: ["engineer", "AI", "robotics", "web development", "machine learning", "portfolio", "Luke Howard"],
   authors: [{ name: "Luke Howard" }],
