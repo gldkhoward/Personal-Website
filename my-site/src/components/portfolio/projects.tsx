@@ -17,12 +17,12 @@ export default function Projects() {
       liveUrl: 'https://www.lecxa.com.au/',
     },
     {
-      title: 'Uni Scheduler.io',
+      title: 'Uni Scheduler',
       description:
         'Ongoing open-source ML timetabling system project that generates optimal timetable selections based on user preferences. ',
       imageUrl: '/images/unisched.png',
       technologies: ['Machine Learning', 'Python', 'Django'],
-      githubUrl: 'https://github.com/gldkhoward/UniScheduler.io',
+      githubUrl: 'https://github.com/gldkhoward/UniScheduler',
       liveUrl: 'https://www.unischeduler.com/'
     },
     {

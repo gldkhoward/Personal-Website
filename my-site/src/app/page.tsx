@@ -92,7 +92,7 @@ export default function Home() {
       
       if (currentStep === 'initial') {
         // Start with the interweb terminal
-        await typeCommand('ssh luke@lukehoward.com.au');
+        await typeCommand('ssh me@lukehoward.com.au');
         await addOutput([
           'connecting...',
           'connection established.',
@@ -101,13 +101,13 @@ export default function Home() {
           ''
         ]);
         // Update the prompt to reflect we're now in Luke's workspace
-        setPromptPrefix('luke@lukehoward.com.au:~$ ');
+        setPromptPrefix('me@lukehoward.com.au:~$ ');
         setCurrentStep('whoami');
       } else if (currentStep === 'whoami') {
-        await typeCommand('whoami', 'luke@lukehoward.com.au:~$ ');
+        await typeCommand('whoami', 'me@lukehoward.com.au:~$ ');
         await addOutput([
           '═════════════════════════════════════════',
-          '  Luke Howard | Engineer & Creative',
+          '  Luke Howard | Founder & Robotics Software Engineer',
           '═════════════════════════════════════════',
           '',
           '• currently: Coding from billabong, AU',
@@ -119,7 +119,7 @@ export default function Home() {
         ]);
         setCurrentStep('runPortfolio');
       } else if (currentStep === 'runPortfolio') {
-        await typeCommand('./explore.sh', 'luke@lukehoward.com.au:~$ ');
+        await typeCommand('./explore.sh', 'me@lukehoward.com.au:~$ ');
         // Simplified output
         await addOutput([
           'Initializing navigation...',
@@ -127,9 +127,9 @@ export default function Home() {
           'Welcome',
           '',
           'What would you like to explore?',
-          '1. Portfolio - Development projects',
-          '2. Blog - Technical articles',
-          '3. About - Professional background'
+          '1. Portfolio - Overview of me + my work',
+          '2. Blog - Technical articles and thoughts',
+          "3. About - Bit of a waffle about me and where I'm at"
         ]);
         setShowPrompt(true);
         setCurrentStep('waitingForInput');
@@ -287,9 +287,7 @@ export default function Home() {
         addOutput([
           'portfolio/',
           'blog/',
-          'about.md',
-          'projects.json',
-          'resume.pdf'
+          'about/',
         ]);
       } else if (input === 'exit') {
         addOutput([

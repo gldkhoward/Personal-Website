@@ -76,9 +76,9 @@ export default function Experience() {
     company: "Lecxa",
     companyUrl: "https://www.lecxa.com.au/",
     description: `
-      Building a frictionless inventory management system for small to medium businesses.
+      Building a frictionless inventory management system for small to medium businesses. There is a huge gap in this space for systems that just work, are low touch and easy to use. Lecxa is that system, essentially an inventory manager for your business, not a system you need to hire an inventory manager to maintain.
     `,
-    technologies: ["React", "Next.js", "TypeScript", "PostgreSQL", "AWS"],
+    technologies: ["React", "Next.js", "TypeScript", "PostgreSQL", "AWS", "Python"],
   },  
   {
     date: "Feb 2023 — Present",
@@ -126,7 +126,14 @@ export default function Experience() {
             "Ever wondered how/who organises desks, equipment, supplies and card access within an engineering faculty, turns out a team of 3 people (of which I was one for this stint). I worked as a technical team member to organise and maintain lab/general spaces for UTS FEIT. If you wanted card access for a lab or space, you emailed our team (ngl it was weird doing this as a ft student).",
           technologies: ["Infrastructure Management", "Compliance and Safety", "Process Development", "PowerBI"],
         },
-        
+        {
+          date: 'Oct 2022 - May 2023', 
+          role: "Bar Manager",
+          company: "The Underground + The Loft",
+          companyUrl: "https://theundergroundsydney.com.au/whats-on/",
+          description: <>I was skeptical on including this one, but it was a cracker experience/story, a student managing a student bar, who&apos;s idea was that? Long story short, I managed 2 bars, a team of 20+ staff and the budget that came with it. It was a blast, we ran the <a href="https://www.mediaweek.com.au/sxsw-sydney-officially-launches-with-sydney-event/" target="_blank" rel="noreferrer noopener" className="text-primary hover:underline">first launch event for SXSW in Aus</a>, concerts with over 600 people and most importantly provided a revamped space for students to socialise and unwind. I learnt alot about managing people, venues and the importance of having a good team.</>,
+          technologies: ["Event Management", "Venue Management"],
+        }
       ];
 
   return (
