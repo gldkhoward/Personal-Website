@@ -9,12 +9,36 @@ import { motion, AnimatePresence } from 'framer-motion';
 export default function Projects() {
   const projects = [
     {
+      title: 'o1lab',
+      description:
+        <>A not-for-profit, open-access hardware lab and component library — completely free to use. Backed by the <a href="https://www.blackbird.foundation/" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80">Blackbird Foundation</a> with equipment/consumable donations from <a href="https://breakerindustries.com/" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80">Breaker</a> and UTS. From zero to one — a garage-like culture built around access, experimentation, and real-world making.</>,
+      imageUrl: '/images/o1lab.png',
+      technologies: ['Hardware', 'Open Access', 'Not-for-Profit', 'Component Library'],
+      liveUrl: 'https://o1lab.xyz',
+    },
+    {
+      title: 'Build In Syd',
+      description:
+        'A one-pager guide for people looking to build in Sydney — co-created in a single morning. Covers the startup ecosystem, active VCs, communities, and how to plug in fast. Now expanding to Build In Aus, Build In Melb, and Build In Bris.',
+      imageUrl: '/images/syd.png',
+      technologies: ['Community', 'Startups', 'Sydney', 'Guide'],
+      liveUrl: 'https://www.buildinsyd.com/',
+    },
+    {
       title: 'Lecxa',
       description:
         'A frictionless inventory management system for small to medium businesses.',
       imageUrl: '/images/lecxa.png',
       technologies: ['React', 'Next.js', 'TypeScript', 'PostgreSQL', 'AWS', 'Golang'],
       liveUrl: 'https://www.lecxa.com.au/',
+    },
+    {
+      title: 'Arrayah / Billabong',
+      description:
+        <>Helped build out <a href="https://arrayah.city" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80">Arrayah</a>&apos;s hackerhouses — intentional coliving spaces for founders, researchers, and artists across Sydney and Perth. <a href="https://billabong.arrayah.city/billabong" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80">Billabong</a> is a waterfront residency in Drummoyne where momentum gathers. High agency, wholistic building, and ambition locally rooted.</>,
+      imageUrl: '/images/billabong.jpg',
+      technologies: ['Community', 'Coliving', 'Hackerhouses', 'Sydney'],
+      liveUrl: 'https://billabong.arrayah.city/billabong',
     },
     {
       title: 'Uni Scheduler',
@@ -38,7 +62,7 @@ export default function Projects() {
       description:
         'Capstone project focused on a custom cable-driven manipulator system for high-payload mining applications.',
       imageUrl: '/images/cdpr.png',
-      technologies: ['C++', 'ROS2','Python', 'CAD'],
+      technologies: ['C++', 'ROS2', 'Python', 'CAD'],
       githubUrl: 'https://github.com/gldkhoward/CDPR',
     },
     {
@@ -93,7 +117,7 @@ export default function Projects() {
     const checkIsMobile = () => {
       setIsMobile(window.innerWidth < 768 || 'ontouchstart' in window);
     };
-    
+
     checkIsMobile();
     window.addEventListener('resize', checkIsMobile);
     return () => window.removeEventListener('resize', checkIsMobile);
@@ -107,14 +131,14 @@ export default function Projects() {
       (entries) => {
         entries.forEach((entry) => {
           const index = parseInt(entry.target.getAttribute('data-index') || '0');
-          
+
           if (entry.isIntersecting) {
             // Find the card closest to center of viewport
             const rect = entry.boundingClientRect;
             const viewportCenter = window.innerHeight / 2;
             const cardCenter = rect.top + rect.height / 2;
             const distanceFromCenter = Math.abs(cardCenter - viewportCenter);
-            
+
             // Only trigger if this card is closest to center
             const isClosestToCenter = cardRefs.current.every((ref, idx) => {
               if (!ref || idx === index) return true;
@@ -123,7 +147,7 @@ export default function Projects() {
               const refDistance = Math.abs(refCenter - viewportCenter);
               return distanceFromCenter <= refDistance;
             });
-            
+
             if (isClosestToCenter) {
               setHoveredIndex(index);
             }
@@ -155,9 +179,9 @@ export default function Projects() {
         <div className="space-y-16">
           {projects.map((project, index) => {
             const isHovered = hoveredIndex === index;
-            
+
             return (
-              <div 
+              <div
                 key={index}
                 className="relative overflow-visible"
               >
@@ -169,7 +193,7 @@ export default function Projects() {
                         key={`title-above-${index}`}
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        exit={{ 
+                        exit={{
                           opacity: 0,
                           y: 40,
                           x: 200,
@@ -188,7 +212,7 @@ export default function Projects() {
                     )}
                   </AnimatePresence>
                 </div>
-                
+
                 {/* Project Card */}
                 <motion.div
                   ref={(el) => { cardRefs.current[index] = el; }}
@@ -216,18 +240,17 @@ export default function Projects() {
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     {/* Overlay that darkens on hover */}
-                    <div 
-                      className={`absolute inset-0 bg-black transition-opacity duration-500 ${
-                        isHovered ? 'opacity-60' : 'opacity-20'
-                      }`}
+                    <div
+                      className={`absolute inset-0 bg-black transition-opacity duration-500 ${isHovered ? 'opacity-60' : 'opacity-20'
+                        }`}
                     />
                   </div>
-                  
+
                   {/* Details Panel - Slides in from right on hover */}
-                  <motion.div 
+                  <motion.div
                     className="absolute top-0 right-0 bottom-0 w-full md:w-2/3 bg-card/95 backdrop-blur-sm p-6 flex flex-col z-30"
                     initial={{ x: '100%' }}
-                    animate={{ 
+                    animate={{
                       x: isHovered ? 0 : '100%'
                     }}
                     transition={{
@@ -242,13 +265,13 @@ export default function Projects() {
                         {isHovered && (
                           <motion.h3
                             key={`title-inside-${index}`}
-                            initial={{ 
+                            initial={{
                               opacity: 0,
                               y: -60,
                               x: -200,
                               scale: 1.2
                             }}
-                            animate={{ 
+                            animate={{
                               opacity: 1,
                               y: 0,
                               x: 0,
@@ -267,33 +290,33 @@ export default function Projects() {
                         )}
                       </AnimatePresence>
                     </div>
-                    
-                    <motion.p 
+
+                    <motion.div
                       className="text-muted-foreground mb-4 text-sm leading-relaxed"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 10 }}
                       transition={{ delay: 0.1, duration: 0.3 }}
                     >
                       {project.description}
-                    </motion.p>
-                    
-                    <motion.div 
+                    </motion.div>
+
+                    <motion.div
                       className="flex flex-wrap gap-2 mb-4"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 10 }}
                       transition={{ delay: 0.15, duration: 0.3 }}
                     >
                       {project.technologies.map((tech, idx) => (
-                        <span 
-                          key={idx} 
+                        <span
+                          key={idx}
                           className="text-xs px-2 py-1 bg-primary/10 text-primary rounded-full"
                         >
                           {tech}
                         </span>
                       ))}
                     </motion.div>
-                    
-                    <motion.div 
+
+                    <motion.div
                       className="flex flex-wrap gap-2 mt-auto"
                       initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 10 }}
