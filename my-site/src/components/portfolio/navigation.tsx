@@ -34,7 +34,7 @@ export default function Sidebar() {
           <a href="https://github.com/gldkhoward" className="hover:text-orange-400">
             <Github size={24} />
           </a>
-          <a href="mailto:ekulhoward@hotmail.com" className="hover:text-orange-400">
+          <a href="mailto:me@lukehoward.com.au" className="hover:text-orange-400">
             <Mail size={24} />
           </a>
         </div>
