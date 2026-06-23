@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ExternalLink, Github, Info, Play, X } from 'lucide-react';
+import { ExternalLink, Github, Info, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { VideoPlayer } from './video-player';
 
 export default function Projects() {
   const projects = [
@@ -76,7 +77,7 @@ export default function Projects() {
     {
       title: 'UTS Motorsports',
       description:
-        "My home for nearly three years — I went from recruit to Business Director & Senior Engineer of UTS's Formula SAE electric race team. I rebuilt and led a 10-person business team across marketing, sponsorship and events, and on the engineering side built the car's Ackermann steering system and internal wheel temperature/pressure sensing. Hit play — the team says it best.",
+        "My home for nearly three years — I went from recruit to Business Director & Senior Engineer of UTS's Formula SAE electric race team. I rebuilt and led a 10-person business team across marketing, sponsorship and events, and on the engineering side built the car's Ackermann steering system and internal wheel temperature/pressure sensing. Hit play for the reveal — a launch video I directed and presented live to 200+ people.",
       imageUrl: '/images/utsme.jpg',
       technologies: ['Formula SAE', 'EV', 'Vehicle Dynamics', 'CAD', 'Leadership'],
       videoId: 'Tv4lowdoVSQ',
@@ -112,18 +113,6 @@ export default function Projects() {
   const [isMobile, setIsMobile] = useState(false);
   const [activeVideo, setActiveVideo] = useState<string | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-
-  // Lock scroll + close on Escape while the video modal is open
-  useEffect(() => {
-    if (!activeVideo) return;
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setActiveVideo(null); };
-    document.body.style.overflow = 'hidden';
-    window.addEventListener('keydown', onKey);
-    return () => {
-      document.body.style.overflow = '';
-      window.removeEventListener('keydown', onKey);
-    };
-  }, [activeVideo]);
 
   // Detect if device is mobile
   useEffect(() => {
@@ -239,6 +228,10 @@ export default function Projects() {
                       src={project.imageUrl}
                       alt={project.title}
                       fill
+                      // Cards render full-width on mobile but only the right ~half of a
+                      // max-w-screen-xl container on desktop (~600px). Telling Next the real
+                      // render size stops it shipping a ~1200px+ source for a 600px slot.
+                      sizes="(min-width: 1024px) 600px, (min-width: 768px) 90vw, 100vw"
                       className="object-cover transition-transform duration-500 group-hover:scale-105"
                     />
                     {/* Overlay that darkens on hover */}
@@ -382,45 +375,10 @@ export default function Projects() {
         </div>
       </div>
 
-      {/* Video lightbox */}
-      <AnimatePresence>
-        {activeVideo && (
-          <motion.div
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 sm:p-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-            onClick={() => setActiveVideo(null)}
-          >
-            <motion.div
-              className="relative w-full max-w-5xl"
-              initial={{ scale: 0.96, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.96, opacity: 0 }}
-              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setActiveVideo(null)}
-                aria-label="Close video"
-                className="absolute -top-9 right-0 flex items-center gap-1 text-sm text-white/80 hover:text-white transition-colors"
-              >
-                <X size={18} /> Close
-              </button>
-              <div className="aspect-video w-full overflow-hidden rounded-lg bg-black shadow-2xl">
-                <iframe
-                  className="h-full w-full"
-                  src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1&rel=0`}
-                  title="UTS Motorsports"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                  allowFullScreen
-                />
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Custom themed player with in-page picture-in-picture */}
+      {activeVideo && (
+        <VideoPlayer videoId={activeVideo} onClose={() => setActiveVideo(null)} />
+      )}
     </section>
   );
 }

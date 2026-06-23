@@ -10,6 +10,7 @@ export default function Sidebar() {
         alt="Luke Howard"
         width={128}  // Corresponds to w-32 (32 * 4)
         height={128}  // Corresponds to h-32 (32 * 4)
+        priority      // Above-the-fold LCP candidate on the portfolio page — load eagerly, skip lazy delay
         className="rounded-full  border-orange-500 shadow-lg"
       />
       <h1 className="text-5xl font-bold mb-4 text-orange-400 pt-4">Luke Howard</h1>
