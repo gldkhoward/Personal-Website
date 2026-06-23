@@ -23,7 +23,7 @@ export default function Projects() {
         'A one-pager guide for people looking to build in Sydney — co-created in a single morning. Covers the startup ecosystem, active VCs, communities, and how to plug in fast. Now expanding to Build In Aus, Build In Melb, and Build In Bris.',
       imageUrl: '/images/syd.png',
       technologies: ['Community', 'Startups', 'Sydney', 'Guide'],
-      liveUrl: 'https://www.buildinsyd.com/',
+      liveUrl: 'https://buildinsyd.com/',
     },
     {
       title: 'Lecxa',
