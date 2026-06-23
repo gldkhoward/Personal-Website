@@ -3,8 +3,8 @@
 import { useState, useEffect, useRef } from 'react';
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { ExternalLink, Github, Info } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ExternalLink, Github, Info, Play, X } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function Projects() {
   const projects = [
@@ -29,13 +29,13 @@ export default function Projects() {
       description:
         'A frictionless inventory management system for small to medium businesses.',
       imageUrl: '/images/lecxa.png',
-      technologies: ['React', 'Next.js', 'TypeScript', 'PostgreSQL', 'AWS', 'Golang'],
+      technologies: ['Vercel', 'React', 'Next.js', 'TypeScript', 'PostgreSQL', 'AWS'],
       liveUrl: 'https://www.lecxa.com.au/',
     },
     {
       title: 'Arrayah / Billabong',
       description:
-        <>Helped build out <a href="https://arrayah.city" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80">Arrayah</a>&apos;s hackerhouses — intentional coliving spaces for founders, researchers, and artists across Sydney and Perth. <a href="https://billabong.arrayah.city/billabong" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80">Billabong</a> is a waterfront residency in Drummoyne where momentum gathers. High agency, wholistic building, and ambition locally rooted.</>,
+        <>Helped build out <a href="https://arrayah.city" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80">Arrayah</a>&apos;s hackerhouses — intentional coliving spaces for founders, researchers, and artists across Sydney and Perth. <a href="https://billabong.arrayah.city/billabong" target="_blank" rel="noopener noreferrer" className="text-primary underline hover:opacity-80">Billabong</a> is a waterfront residency in Drummoyne where momentum gathers. High agency, holistic building, and ambition rooted locally.</>,
       imageUrl: '/images/billabong.jpg',
       technologies: ['Community', 'Coliving', 'Hackerhouses', 'Sydney'],
       liveUrl: 'https://billabong.arrayah.city/billabong',
@@ -43,9 +43,9 @@ export default function Projects() {
     {
       title: 'Uni Scheduler',
       description:
-        'Ongoing open-source ML timetabling system project that generates optimal timetable selections based on user preferences. ',
+        'My first Next.js app — an ML timetabling tool that builds optimal university schedules from your preferences. Shipped on Vercel early on; no longer maintained, but still quietly used by students today.',
       imageUrl: '/images/unisched.png',
-      technologies: ['Machine Learning', 'Python', 'Django'],
+      technologies: ['Next.js', 'Vercel', 'Machine Learning', 'Python', 'Django'],
       githubUrl: 'https://github.com/gldkhoward/UniScheduler',
       liveUrl: 'https://www.unischeduler.com/'
     },
@@ -68,18 +68,18 @@ export default function Projects() {
     {
       title: 'PipX',
       description:
-        'A google chrome extension that extends PIP (Picture in Picture) functionality to any video on any website.',
+        'A google chrome extension that extends PIP (Picture in Picture) functionality with heavy customisation to any video on any website.',
       imageUrl: '/images/pipx.png',
       technologies: ['JavaScript', 'Chrome Extensions'],
       githubUrl: 'https://github.com/gldkhoward/pipx-chrome-exentsion',
     },
     {
-      title: 'GLDK Components',
+      title: 'UTS Motorsports',
       description:
-        'A personal project to experiment and collate my front-end web-development resources. Also serves as a deployment playground where I can experiment and test out new concepts for Web-Development',
-      imageUrl: '/images/gldkcmpts.png',
-      technologies: ['React', 'Next.js', 'TypeScript'],
-      learnMoreUrl: 'https://github.com/gldkhoward/GldkWebComponents',
+        "My home for nearly three years — I went from recruit to Business Director & Senior Engineer of UTS's Formula SAE electric race team. I rebuilt and led a 10-person business team across marketing, sponsorship and events, and on the engineering side built the car's Ackermann steering system and internal wheel temperature/pressure sensing. Hit play — the team says it best.",
+      imageUrl: '/images/utsme.jpg',
+      technologies: ['Formula SAE', 'EV', 'Vehicle Dynamics', 'CAD', 'Leadership'],
+      videoId: 'Tv4lowdoVSQ',
     },
     {
       title: 'GoFur',
@@ -110,7 +110,20 @@ export default function Projects() {
 
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [activeVideo, setActiveVideo] = useState<string | null>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  // Lock scroll + close on Escape while the video modal is open
+  useEffect(() => {
+    if (!activeVideo) return;
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setActiveVideo(null); };
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', onKey);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', onKey);
+    };
+  }, [activeVideo]);
 
   // Detect if device is mobile
   useEffect(() => {
@@ -123,54 +136,50 @@ export default function Projects() {
     return () => window.removeEventListener('resize', checkIsMobile);
   }, []);
 
-  // Intersection Observer for mobile scroll-triggered animations
+  // Mobile: continuously highlight whichever card is closest to the viewport center.
+  // A single stable scroll listener (rAF-throttled) — no IntersectionObserver churn or
+  // threshold lag, so the active card switches the instant you scroll onto it.
   useEffect(() => {
     if (!isMobile) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          const index = parseInt(entry.target.getAttribute('data-index') || '0');
+    let raf = 0;
+    const update = () => {
+      raf = 0;
+      const viewportCenter = window.innerHeight / 2;
+      // Only consider a card "active" once it's reasonably central.
+      const activationBand = window.innerHeight * 0.45;
+      let closest: number | null = null;
+      let closestDist = Infinity;
 
-          if (entry.isIntersecting) {
-            // Find the card closest to center of viewport
-            const rect = entry.boundingClientRect;
-            const viewportCenter = window.innerHeight / 2;
-            const cardCenter = rect.top + rect.height / 2;
-            const distanceFromCenter = Math.abs(cardCenter - viewportCenter);
+      cardRefs.current.forEach((ref, idx) => {
+        if (!ref) return;
+        const rect = ref.getBoundingClientRect();
+        if (rect.bottom < 0 || rect.top > window.innerHeight) return; // off-screen
+        const center = rect.top + rect.height / 2;
+        const dist = Math.abs(center - viewportCenter);
+        if (dist < closestDist) {
+          closestDist = dist;
+          closest = idx;
+        }
+      });
 
-            // Only trigger if this card is closest to center
-            const isClosestToCenter = cardRefs.current.every((ref, idx) => {
-              if (!ref || idx === index) return true;
-              const refRect = ref.getBoundingClientRect();
-              const refCenter = refRect.top + refRect.height / 2;
-              const refDistance = Math.abs(refCenter - viewportCenter);
-              return distanceFromCenter <= refDistance;
-            });
+      const next = closestDist <= activationBand ? closest : null;
+      setHoveredIndex((prev) => (prev === next ? prev : next));
+    };
 
-            if (isClosestToCenter) {
-              setHoveredIndex(index);
-            }
-          } else {
-            // Only clear if this was the active card
-            if (hoveredIndex === index) {
-              setHoveredIndex(null);
-            }
-          }
-        });
-      },
-      {
-        threshold: 0.3,
-        rootMargin: '-20% 0px -20% 0px'
-      }
-    );
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
 
-    cardRefs.current.forEach((ref) => {
-      if (ref) observer.observe(ref);
-    });
-
-    return () => observer.disconnect();
-  }, [isMobile, hoveredIndex]);
+    update(); // set initial state
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [isMobile]);
 
   return (
     <section id="projects" className="py-16">
@@ -179,6 +188,9 @@ export default function Projects() {
         <div className="space-y-16">
           {projects.map((project, index) => {
             const isHovered = hoveredIndex === index;
+            // Video tiles carry more copy, so give them extra height.
+            const restHeight = project.videoId ? '360px' : '320px';
+            const openHeight = project.videoId ? '464px' : '368px';
 
             return (
               <div
@@ -191,19 +203,12 @@ export default function Projects() {
                     {!isHovered && (
                       <motion.h3
                         key={`title-above-${index}`}
-                        initial={{ opacity: 0, y: -20 }}
+                        initial={{ opacity: 0, y: -12 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{
                           opacity: 0,
-                          y: 40,
-                          x: 200,
-                          scale: 0.9,
-                          transition: {
-                            type: "spring",
-                            stiffness: 200,
-                            damping: 15,
-                            mass: 0.8
-                          }
+                          y: -12,
+                          transition: { duration: 0.25, ease: [0.22, 1, 0.36, 1] }
                         }}
                         className="text-3xl font-bold text-primary relative z-50"
                       >
@@ -217,20 +222,17 @@ export default function Projects() {
                 <motion.div
                   ref={(el) => { cardRefs.current[index] = el; }}
                   data-index={index}
-                  className="group relative bg-card rounded-lg overflow-hidden shadow-md hover:shadow-2xl transition-shadow duration-500"
+                  className="group relative rounded-lg shadow-md hover:shadow-2xl transition-shadow duration-500"
                   onMouseEnter={() => !isMobile && setHoveredIndex(index)}
                   onMouseLeave={() => !isMobile && setHoveredIndex(null)}
                   animate={{
-                    height: isHovered ? '368px' : '320px',
+                    height: isHovered ? openHeight : restHeight,
                     y: isHovered ? -48 : 0,
                   }}
-                  transition={{
-                    type: "spring",
-                    stiffness: 300,
-                    damping: 25,
-                    mass: 0.8
-                  }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                 >
+                  {/* Static clip layer: rounding + overflow live here (never transformed) to avoid the GPU rounded-clip fringe */}
+                  <div className="absolute inset-0 rounded-lg overflow-hidden isolate bg-card">
                   {/* Full Image Background */}
                   <div className="absolute inset-0">
                     <Image
@@ -246,18 +248,31 @@ export default function Projects() {
                     />
                   </div>
 
-                  {/* Details Panel - Slides in from right on hover */}
+                  {/* Play button for video tiles — stays visible and glides into the
+                      uncovered left image area when the details panel wipes in. */}
+                  {project.videoId && (!isMobile || !isHovered) && (
+                    <motion.button
+                      type="button"
+                      onClick={() => setActiveVideo(project.videoId!)}
+                      aria-label={`Play ${project.title} video`}
+                      className="absolute top-1/2 z-40 flex h-16 w-16 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-full bg-black/45 text-white ring-1 ring-white/40 backdrop-blur-sm transition-colors hover:bg-black/65"
+                      initial={false}
+                      animate={{ left: isHovered && !isMobile ? '16.6667%' : '50%' }}
+                      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                    >
+                      <Play className="h-7 w-7 translate-x-0.5" fill="currentColor" />
+                    </motion.button>
+                  )}
+
+                  {/* Details Panel - wipes open from the right edge (pinned edges = no visual leak) */}
                   <motion.div
-                    className="absolute top-0 right-0 bottom-0 w-full md:w-2/3 bg-card/95 backdrop-blur-sm p-6 flex flex-col z-30"
-                    initial={{ x: '100%' }}
+                    className="absolute top-0 right-0 bottom-0 w-full md:w-2/3 bg-card p-6 flex flex-col z-30"
+                    style={{ willChange: 'clip-path' }}
+                    initial={false}
                     animate={{
-                      x: isHovered ? 0 : '100%'
+                      clipPath: isHovered ? 'inset(0% 0% 0% 0%)' : 'inset(0% 0% 0% 100%)',
                     }}
-                    transition={{
-                      type: "spring",
-                      stiffness: 300,
-                      damping: 30
-                    }}
+                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   >
                     {/* Animated Title inside details panel */}
                     <div className="mb-3 relative z-50 overflow-visible">
@@ -265,24 +280,9 @@ export default function Projects() {
                         {isHovered && (
                           <motion.h3
                             key={`title-inside-${index}`}
-                            initial={{
-                              opacity: 0,
-                              y: -60,
-                              x: -200,
-                              scale: 1.2
-                            }}
-                            animate={{
-                              opacity: 1,
-                              y: 0,
-                              x: 0,
-                              scale: 1
-                            }}
-                            transition={{
-                              type: "spring",
-                              stiffness: 180,
-                              damping: 12,
-                              mass: 1
-                            }}
+                            initial={{ opacity: 0, x: -16 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                             className="text-2xl font-bold text-primary relative z-50"
                           >
                             {project.title}
@@ -322,6 +322,17 @@ export default function Projects() {
                       animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 10 }}
                       transition={{ delay: 0.2, duration: 0.3 }}
                     >
+                      {project.videoId && (
+                        <Button
+                          size="sm"
+                          variant="default"
+                          className="flex items-center gap-1"
+                          onClick={() => setActiveVideo(project.videoId!)}
+                        >
+                          <Play size={16} fill="currentColor" />
+                          <span>Watch</span>
+                        </Button>
+                      )}
                       {project.githubUrl && (
                         <Button size="sm" variant="outline" asChild>
                           <a
@@ -363,12 +374,53 @@ export default function Projects() {
                       )}
                     </motion.div>
                   </motion.div>
+                  </div>
                 </motion.div>
               </div>
             );
           })}
         </div>
       </div>
+
+      {/* Video lightbox */}
+      <AnimatePresence>
+        {activeVideo && (
+          <motion.div
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-black/80 p-4 sm:p-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            onClick={() => setActiveVideo(null)}
+          >
+            <motion.div
+              className="relative w-full max-w-5xl"
+              initial={{ scale: 0.96, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.96, opacity: 0 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <button
+                onClick={() => setActiveVideo(null)}
+                aria-label="Close video"
+                className="absolute -top-9 right-0 flex items-center gap-1 text-sm text-white/80 hover:text-white transition-colors"
+              >
+                <X size={18} /> Close
+              </button>
+              <div className="aspect-video w-full overflow-hidden rounded-lg bg-black shadow-2xl">
+                <iframe
+                  className="h-full w-full"
+                  src={`https://www.youtube.com/embed/${activeVideo}?autoplay=1&rel=0`}
+                  title="UTS Motorsports"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                />
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

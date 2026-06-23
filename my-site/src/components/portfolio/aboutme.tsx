@@ -6,13 +6,7 @@ export default function AboutMe() {
       <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-center space-y-8 md:space-y-0 md:space-x-16">
         <div className="">
           <p className="text-lg leading-relaxed text-muted-foreground">
-            Hi there! 👋 I&apos;m Luke. After taking a hard pivot out of the corporate scene last year, I co-founded a startup that&apos;s now making revenue and transforming inventory management for small businesses. I helped build out some of the best hackerhouses in Australia, and started a free, open-access hardware space in Sydney for builders, artists, and tinkerers to create physical things.
-          </p>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            A lot has changed over the past year, but what hasn&apos;t is a deep love for creation -{'>'} taking things from zero to one. I love technology, I love problem solving, and I love shipping things into the real world. I&apos;m someone who does the thing, not someone who talks about doing the thing.
-          </p>
-          <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
-            Currently building and scaling{" "}
+            Hi there! 👋 I&apos;m Luke — a founder and full-stack engineer who builds things from zero to one: software products, technical systems, and the communities around them. I co-founded{" "}
             <a
               href="https://www.lecxa.com.au/"
               target="_blank"
@@ -21,7 +15,7 @@ export default function AboutMe() {
             >
               Lecxa
             </a>{" "}
-            and{" "}
+            and took it from idea to a revenue-generating inventory platform for small businesses, helped build out some of the best hackerhouses in Australia, and founded{" "}
             <a
               href="https://o1lab.xyz"
               target="_blank"
@@ -29,8 +23,14 @@ export default function AboutMe() {
               className="font-semibold hover:text-primary transition-colors"
             >
               o1lab
-            </a>
-            , but always up for an interesting project or deep dive into new tech. If you&apos;re into robotics, AI, aus startups, or just want to chat -{'> '}
+            </a>{" "}
+            — a free, open-access hardware lab in Sydney backed by the Blackbird Foundation.
+          </p>
+          <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
+            The common thread is simple: I like technology, getting it into people&apos;s hands, and creating the ecosystem around it so others can build too. I love problem solving, I love shipping into the real world, and I&apos;m someone who does the thing, not someone who talks about doing the thing.
+          </p>
+          <p className="mt-4 text-lg leading-relaxed text-muted-foreground">
+            These days I&apos;m bullish on Australia 🇦🇺, startups, AI, robotics, and the next generation of technical founders — and always up for an interesting project or a deep dive into new tech. If you&apos;re into any of that, or just want to chat -{'> '}
             <a
               href="https://www.linkedin.com/in/lukehowarduts"
               target="_blank"

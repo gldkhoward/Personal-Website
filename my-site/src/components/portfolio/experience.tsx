@@ -71,24 +71,24 @@ export default function Experience() {
 
   const experiences = [
   {
-    date: "Aug 2025 — Present",
+    date: "Aug 2025 — Apr 2026",
     role: "Co-Founder & CTO",
     company: "Lecxa",
     companyUrl: "https://www.lecxa.com.au/",
     description: `
-      Building a frictionless inventory management system for small to medium businesses. There is a huge gap in this space for systems that just work, are low touch and easy to use. Lecxa is that system, essentially an inventory manager for your business, not a system you need to hire an inventory manager to maintain.
+      Built a frictionless inventory management system for small to medium businesses. There's a huge gap in this space for systems that just work, are low touch and easy to use. Lecxa is that system — an inventory manager for your business, not one you need to hire an inventory manager to maintain. Took it 0→1 into a revenue-generating SaaS, owning the technical architecture and product direction as CTO.
     `,
-    technologies: ["React", "Next.js", "TypeScript", "PostgreSQL", "AWS", "Python"],
+    technologies: ["React", "Next.js", "TypeScript", "PostgreSQL", "Vercel", "AWS", "Python"],
   },  
   {
     date: "Feb 2023 — Present",
-    role: "Casual Academic",
+    role: "Sessional Academic & Subject Developer",
     company: "University of Technology Sydney",
     companyUrl: "https://www.uts.edu.au/about/faculties/engineering-and-information-technology/mechanical-and-mechatronic-engineering",
     description: `
-      I learn through teaching. This started early in high school, helping other students understand concepts. Off the back of some impressive results and involvement with subjects I got my first teaching contract! Since then I've taught across 8 different subjects at UTS, over 500 students and achieved the highest student satisfaction rate for a subject with the FEIT faculty. 
+      I learn through teaching. It started in high school helping classmates with concepts, and turned into my first teaching contract off the back of strong results. Since then I've taught across 8 subjects at UTS — these days Industrial Robotics and Additive Manufacturing to 300+ students a year — built lecture, tutorial and lab content from scratch, and earned the highest student satisfaction result ever recorded for a FEIT subject.
     `,
-    technologies: ["Educational Leadership", "C++", "MATLAB"],
+    technologies: ["Educational Leadership", "Robotics", "Additive Manufacturing", "CAD"],
   },
   {  
     date: "Aug 2024 — Aug 2025",
@@ -96,7 +96,7 @@ export default function Experience() {
     company: "DataScope Systems",
     companyUrl: "https://www.datascopesystems.com/",
     description: `
-      This was an interesting side quest. During my final year I was approached about an oppurtunity with DataScope, they needed a quick learner to onboard and kickstart some projects using their software in Australia. Next thing I know I'm in Chester, UK for over a month, before coming back and running implimentation and support for APAC clients. As the only employee in APAC, I'll be honest, it was lonely af, I had to make alot of big decisions while managers and collegues were asleep.
+      This was an interesting side quest. During my final year I was approached about an opportunity with DataScope — they needed a quick learner to onboard and kickstart some projects using their software in Australia. Next thing I know I'm in Chester, UK for over a month, then back home running implementation and support for APAC clients. As the only employee in the region, I'll be honest, it was isolating at times — managers and colleagues were asleep when I had to make the big calls. But it taught me to back myself, operate with full autonomy, and ship independently, which is something I lean on every day now.
     `,
     technologies: ["SQL", "Python", ".NET", "React", "Agile"],
   },
@@ -106,7 +106,7 @@ export default function Experience() {
     company: "Ergosphere.ai",
     companyUrl: "https://ergosphere.ai",
     description:
-      "This was my first professional exposure to software development and something that got me hooked on it. As a mechatronics engineer you get a taste of alot of disciplines, this expereince made me realise I was definitely a software-mechatronics engineer. It peaked an interest in machine learning and led to me selecting enrolling in a Computer Science sub-major in Data Analytics and machine learning to further this interest",
+      "My first professional software role — and the one that made me realise I'm a software-mechatronics engineer at heart. As a mechatronics engineer you get a taste of a lot of disciplines; this is where I learnt software was mine. It piqued my interest in machine learning and led me to enrol in a Computer Science sub-major in Data Analytics and Machine Learning to chase it further.",
     technologies: ["Python", "Machine Learning", "Full-Stack Software Development"],
   },
   {
@@ -114,7 +114,7 @@ export default function Experience() {
     role: "Director",
     company: "ActivateUTS",
     companyUrl: "https://www.activateuts.com.au/",
-    description: "I am one of the BIGGEST advocates for student experience/involvement at university. ActivateUTS is the social lifeblood of UTS, a not-for-profit organisation that looks after on campus events, activities, societys and facilities. I was fortunate enough to be elected as a Director to help manage the organisation and help steer policy and direction in alignment with what students wanted.",
+    description: "I am one of the BIGGEST advocates for student experience/involvement at university. ActivateUTS is the social lifeblood of UTS, a not-for-profit organisation that looks after on-campus events, activities, societies and facilities. I was fortunate enough to be elected as a Director to help manage the organisation and help steer policy and direction in alignment with what students wanted.",
     technologies: [],
   },
         {
@@ -123,7 +123,7 @@ export default function Experience() {
           company: "University of Technology Sydney",
           companyUrl: "https://www.uts.edu.au",
           description:
-            "Ever wondered how/who organises desks, equipment, supplies and card access within an engineering faculty, turns out a team of 3 people (of which I was one for this stint). I worked as a technical team member to organise and maintain lab/general spaces for UTS FEIT. If you wanted card access for a lab or space, you emailed our team (ngl it was weird doing this as a ft student).",
+            "Ever wondered how/who organises desks, equipment, supplies and card access within an engineering faculty, turns out a team of 3 people (of which I was one for this stint). I worked as a technical team member to organise and maintain lab/general spaces for UTS FEIT. If you wanted card access for a lab or space, you emailed our team (honestly, a little surreal doing this as a full-time student myself).",
           technologies: ["Infrastructure Management", "Compliance and Safety", "Process Development", "PowerBI"],
         },
         {
@@ -131,7 +131,7 @@ export default function Experience() {
           role: "Bar Manager",
           company: "The Underground + The Loft",
           companyUrl: "https://theundergroundsydney.com.au/whats-on/",
-          description: <>I was skeptical on including this one, but it was a cracker experience/story, a student managing a student bar, who&apos;s idea was that? Long story short, I managed 2 bars, a team of 20+ staff and the budget that came with it. It was a blast, we ran the <a href="https://www.mediaweek.com.au/sxsw-sydney-officially-launches-with-sydney-event/" target="_blank" rel="noreferrer noopener" className="text-primary hover:underline">first launch event for SXSW in Aus</a>, concerts with over 600 people and most importantly provided a revamped space for students to socialise and unwind. I learnt alot about managing people, venues and the importance of having a good team.</>,
+          description: <>I was skeptical on including this one, but it was a cracker experience/story, a student managing a student bar, who&apos;s idea was that? Long story short, I managed 2 bars, a team of 20+ staff and the budget that came with it. It was a blast, we ran the <a href="https://www.mediaweek.com.au/sxsw-sydney-officially-launches-with-sydney-event/" target="_blank" rel="noreferrer noopener" className="text-primary hover:underline">first launch event for SXSW in Aus</a>, concerts with over 600 people and most importantly provided a revamped space for students to socialise and unwind. I learnt a lot about managing people, venues and the importance of having a good team.</>,
           technologies: ["Event Management", "Venue Management"],
         }
       ];

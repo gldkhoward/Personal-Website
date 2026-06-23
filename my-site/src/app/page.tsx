@@ -1,15 +1,13 @@
-// pages/index.tsx
+// app/page.tsx
 "use client"
 
 import React from "react";
 import { useState, useEffect, useRef, useCallback } from 'react';
-import Head from 'next/head';
 import { GlowEffect } from '@/components/ui/glow-effect';
 import { ThemeToggle } from "@/components/theme-toggle";
 
-
 // Define types for the application
-type TerminalStep = 
+type TerminalStep =
   | 'initial'
   | 'whoami'
   | 'runPortfolio'
@@ -25,6 +23,51 @@ interface StyledTerminalLine {
   prefix?: string;
 }
 
+const SEEN_KEY = 'lh_terminal_seen_v1';
+const INTERWEB_PREFIX = 'user@interweb:~$ ';
+const WORKSPACE_PREFIX = 'me@lukehoward.com.au:~$ ';
+
+// Output blocks shared by the animated intro and the instant (returning-visitor) render,
+// so the two paths can never drift apart.
+const CONNECT_OUTPUT = ['connecting...', 'connection established.', '', ''];
+
+const whoamiOutput = (): string[] => {
+  const now = new Date();
+  return [
+    '═════════════════════════════════════════',
+    '  Luke Howard | Founder & Robotics Software Engineer',
+    '═════════════════════════════════════════',
+    '',
+    '• currently: Coding from billabong, AU',
+    `• last visitor: ${now.toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' })} @ ${now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}`,
+    '• current project: o1lab',
+    '',
+    'type "help" for available commands.',
+    '',
+  ];
+};
+
+const EXPLORE_OUTPUT = [
+  'Initializing navigation...',
+  '',
+  'Welcome',
+  '',
+  'What would you like to explore?',
+  '1. Portfolio - Overview of me + my work',
+  '2. Blog - Technical articles and thoughts',
+  "3. About - Bit of a waffle about me and where I'm at",
+];
+
+// The fully settled terminal, rendered instantly for returning visitors / skip / reduced-motion.
+const buildCompletedTerminal = (): StyledTerminalLine[] => [
+  { content: INTERWEB_PREFIX + 'ssh me@lukehoward.com.au', isCommand: true, prefix: INTERWEB_PREFIX },
+  ...CONNECT_OUTPUT.map((line) => ({ content: line, isCommand: false })),
+  { content: WORKSPACE_PREFIX + 'whoami', isCommand: true, prefix: WORKSPACE_PREFIX },
+  ...whoamiOutput().map((line) => ({ content: line, isCommand: false })),
+  { content: WORKSPACE_PREFIX + './explore.sh', isCommand: true, prefix: WORKSPACE_PREFIX },
+  ...EXPLORE_OUTPUT.map((line) => ({ content: line, isCommand: false })),
+];
+
 export default function Home() {
   const [terminalContent, setTerminalContent] = useState<StyledTerminalLine[]>([]);
   const [currentInput, setCurrentInput] = useState<string>('');
@@ -33,7 +76,13 @@ export default function Home() {
   const [promptPrefix, setPromptPrefix] = useState<string>('user@interweb:~$ ');
   const [commandHistory, setCommandHistory] = useState<string[]>([]);
   const [historyIndex, setHistoryIndex] = useState<number>(-1);
+  // Gate the intro until we've decided (on mount) whether to play it or skip straight to the end.
+  const [decided, setDecided] = useState(false);
   const terminalRef = useRef<HTMLDivElement>(null);
+  // When true, the typewriter sequence aborts (returning visitor, skip, or reduced motion).
+  const cancelledRef = useRef(false);
+  // Tracks which steps of the intro sequence have already run.
+  const hasRunSequence = useRef<Record<string, boolean>>({});
 
   // Define available commands
   const availableCommands = [
@@ -47,10 +96,11 @@ export default function Home() {
   // Function to add a command with typewriter effect - wrapped in useCallback
   const typeCommand = useCallback(async (command: string, prefix: string = promptPrefix, delay: number = 80): Promise<void> => {
     const fullText = prefix + command;
-    
+
     setTerminalContent(prev => [...prev, { content: '', isCommand: true, prefix }]);
-    
+
     for (let i = 0; i < fullText.length; i++) {
+      if (cancelledRef.current) return;
       setTerminalContent(prev => {
         const newContent = [...prev];
         newContent[newContent.length - 1] = {
@@ -62,15 +112,15 @@ export default function Home() {
       });
       await new Promise(resolve => setTimeout(resolve, delay));
     }
-    
+
     return new Promise(resolve => setTimeout(resolve, 300));
   }, [promptPrefix]);
-  
+
   // Function to add output instantly - wrapped in useCallback
   const addOutput = useCallback((output: string | string[]): Promise<void> => {
     if (Array.isArray(output)) {
       setTerminalContent(prev => [
-        ...prev, 
+        ...prev,
         ...output.map(line => ({ content: line, isCommand: false }))
       ]);
     } else {
@@ -79,62 +129,64 @@ export default function Home() {
     return new Promise(resolve => setTimeout(resolve, 100));
   }, []);
 
-  // Function to execute the terminal sequence - Using a ref to track if the effect has run for a step
-  const hasRunSequence = useRef<Record<string, boolean>>({});
-  
+  // Jump straight to the settled terminal (skip / returning visitor / reduced motion).
+  const completeIntro = useCallback(() => {
+    cancelledRef.current = true;
+    hasRunSequence.current = { initial: true, whoami: true, runPortfolio: true, waitingForInput: true };
+    setTerminalContent(buildCompletedTerminal());
+    setPromptPrefix(WORKSPACE_PREFIX);
+    setShowPrompt(true);
+    setCurrentStep('waitingForInput');
+    try { sessionStorage.setItem(SEEN_KEY, '1'); } catch { }
+  }, []);
+
+  // On mount: returning visitors (or those who prefer reduced motion) skip the animation entirely.
+  useEffect(() => {
+    let seen = false;
+    let reduced = false;
+    try { seen = sessionStorage.getItem(SEEN_KEY) === '1'; } catch { }
+    try { reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch { }
+
+    if (seen || reduced) {
+      completeIntro();
+    }
+    setDecided(true);
+  }, [completeIntro]);
+
   useEffect(() => {
     const runTerminalSequence = async (): Promise<void> => {
+      // Wait for the mount decision, and bail if the intro has been skipped/cancelled.
+      if (!decided || cancelledRef.current) return;
       // Skip if we've already run this step
       if (hasRunSequence.current[currentStep]) return;
-      
+
       // Mark this step as run
       hasRunSequence.current[currentStep] = true;
-      
+
       if (currentStep === 'initial') {
         // Start with the interweb terminal
         await typeCommand('ssh me@lukehoward.com.au');
-        await addOutput([
-          'connecting...',
-          'connection established.',
-          '',
-          
-          ''
-        ]);
+        if (cancelledRef.current) return;
+        await addOutput(CONNECT_OUTPUT);
+        if (cancelledRef.current) return;
         // Update the prompt to reflect we're now in Luke's workspace
-        setPromptPrefix('me@lukehoward.com.au:~$ ');
+        setPromptPrefix(WORKSPACE_PREFIX);
         setCurrentStep('whoami');
       } else if (currentStep === 'whoami') {
-        await typeCommand('whoami', 'me@lukehoward.com.au:~$ ');
-        await addOutput([
-          '═════════════════════════════════════════',
-          '  Luke Howard | Founder & Robotics Software Engineer',
-          '═════════════════════════════════════════',
-          '',
-          '• currently: Coding from billabong, AU',
-          `• last visitor: ${new Date().toLocaleDateString('en-US', { day: '2-digit', month: 'long', year: 'numeric' })} @ ${new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}`,
-          '• current project: Lecxa',
-          '',
-          'type "help" for available commands.',
-          ''
-        ]);
+        await typeCommand('whoami', WORKSPACE_PREFIX);
+        if (cancelledRef.current) return;
+        await addOutput(whoamiOutput());
+        if (cancelledRef.current) return;
         setCurrentStep('runPortfolio');
       } else if (currentStep === 'runPortfolio') {
-        await typeCommand('./explore.sh', 'me@lukehoward.com.au:~$ ');
-        // Simplified output
-        await addOutput([
-          'Initializing navigation...',
-          '',
-          'Welcome',
-          '',
-          'What would you like to explore?',
-          '1. Portfolio - Overview of me + my work',
-          '2. Blog - Technical articles and thoughts',
-          "3. About - Bit of a waffle about me and where I'm at"
-        ]);
+        await typeCommand('./explore.sh', WORKSPACE_PREFIX);
+        if (cancelledRef.current) return;
+        await addOutput(EXPLORE_OUTPUT);
+        if (cancelledRef.current) return;
+        try { sessionStorage.setItem(SEEN_KEY, '1'); } catch { }
         setShowPrompt(true);
         setCurrentStep('waitingForInput');
       } else if (currentStep === 'portfolio') {
-        // This section is now simplified since we're redirecting to external pages
         await addOutput([
           'Redirecting to portfolio page...',
           'Opening in new tab.'
@@ -143,7 +195,6 @@ export default function Home() {
         setShowPrompt(true);
         setCurrentStep('waitingForInput');
       } else if (currentStep === 'blog') {
-        // This section is now simplified since we're redirecting to external pages
         await addOutput([
           'Redirecting to blog page...',
           'Opening in new tab.'
@@ -152,7 +203,6 @@ export default function Home() {
         setShowPrompt(true);
         setCurrentStep('waitingForInput');
       } else if (currentStep === 'about') {
-        // This section is now simplified since we're redirecting to external pages
         await addOutput([
           'Redirecting to about page...',
           'Opening in new tab.'
@@ -164,7 +214,7 @@ export default function Home() {
     };
 
     runTerminalSequence();
-  }, [currentStep, promptPrefix, typeCommand, addOutput]);
+  }, [currentStep, decided, promptPrefix, typeCommand, addOutput]);
 
   // Auto scroll the terminal to the bottom
   useEffect(() => {
@@ -179,12 +229,12 @@ export default function Home() {
     if (e.key === 'Tab' && showPrompt) {
       e.preventDefault();
       const input = currentInput.toLowerCase();
-      
+
       // Find matching commands
-      const matches = availableCommands.filter(cmd => 
+      const matches = availableCommands.filter(cmd =>
         cmd.toLowerCase().startsWith(input)
       );
-      
+
       if (matches.length === 1) {
         // Single match - complete it
         setCurrentInput(matches[0]);
@@ -192,13 +242,13 @@ export default function Home() {
         // Multiple matches - show them and complete common prefix
         const commonPrefix = matches.reduce((prefix, cmd) => {
           let i = 0;
-          while (i < prefix.length && i < cmd.length && 
+          while (i < prefix.length && i < cmd.length &&
                  prefix[i].toLowerCase() === cmd[i].toLowerCase()) {
             i++;
           }
           return cmd.substring(0, i);
         });
-        
+
         // Update input to common prefix if it's longer than current input
         if (commonPrefix.length > input.length) {
           setCurrentInput(commonPrefix);
@@ -209,20 +259,20 @@ export default function Home() {
       }
       return;
     }
-    
+
     // Arrow up - previous command in history
     if (e.key === 'ArrowUp' && showPrompt) {
       e.preventDefault();
       if (commandHistory.length > 0) {
-        const newIndex = historyIndex === -1 
-          ? commandHistory.length - 1 
+        const newIndex = historyIndex === -1
+          ? commandHistory.length - 1
           : Math.max(0, historyIndex - 1);
         setHistoryIndex(newIndex);
         setCurrentInput(commandHistory[newIndex]);
       }
       return;
     }
-    
+
     // Arrow down - next command in history
     if (e.key === 'ArrowDown' && showPrompt) {
       e.preventDefault();
@@ -238,25 +288,25 @@ export default function Home() {
       }
       return;
     }
-    
+
     if (e.key === 'Enter' && showPrompt) {
       e.preventDefault();
       const input = currentInput.trim().toLowerCase();
-      
+
       // Add to command history if not empty and not duplicate of last command
       if (input !== '' && (commandHistory.length === 0 || commandHistory[commandHistory.length - 1] !== input)) {
         setCommandHistory(prev => [...prev, input]);
       }
       setHistoryIndex(-1);
-      
+
       // Show the command with current prefix
-      setTerminalContent(prev => [...prev, { 
-        content: `${promptPrefix}${input}`, 
+      setTerminalContent(prev => [...prev, {
+        content: `${promptPrefix}${input}`,
         isCommand: true,
         prefix: promptPrefix
       }]);
       setCurrentInput('');
-      
+
       // Process commands
       if (input === '1' || input === 'portfolio' || input === './portfolio' || input == 'cd portfolio') {
         window.open('/portfolio', '_blank');
@@ -298,7 +348,9 @@ export default function Home() {
           'Connection terminated. Have a great day!',
           ''
         ]);
-        // Reset to initial state
+        // Reset to initial state and allow the intro to replay
+        cancelledRef.current = false;
+        try { sessionStorage.removeItem(SEEN_KEY); } catch { }
         setPromptPrefix('user@interweb:~$ ');
         setCurrentStep('initial');
         // Clear the run sequence tracking to allow restarting
@@ -317,15 +369,15 @@ export default function Home() {
     if (!line.isCommand) {
       return <div className="whitespace-pre-wrap">{line.content}</div>;
     }
-    
+
     // Handle command lines with proper styling
     const prefix = line.prefix || promptPrefix;
-    
+
     if (prefix.includes('@') && prefix.includes(':~$')) {
       const [user, host] = prefix.split('@');
       const [hostName] = host.split(':');
       const inputPart = line.content.substring(prefix.length);
-      
+
       return (
         <div className="flex whitespace-pre-wrap">
           <span className="text-green-600 dark:text-green-400">{user}@{hostName}</span>
@@ -336,7 +388,7 @@ export default function Home() {
         </div>
       );
     }
-    
+
     // Fallback for any other command formats
     return <div className="whitespace-pre-wrap">{line.content}</div>;
   };
@@ -345,7 +397,7 @@ export default function Home() {
   const renderPrompt = (): React.ReactElement => {
     const [user, host] = promptPrefix.split('@');
     const [hostName] = host.split(':');
-    
+
     return (
       <div className="flex">
         <span className="text-green-600 dark:text-green-400">{user}@{hostName}</span>
@@ -364,14 +416,10 @@ export default function Home() {
     );
   };
 
+  const introPlaying = decided && currentStep !== 'waitingForInput';
+
   return (
     <div className="min-h-screen w-full bg-background flex flex-col items-center justify-center p-4">
-      <Head>
-        <title>Luke Howard | Developer</title>
-        <meta name="description" content="Luke Howard's Portfolio" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
       <main className="w-full max-w-2xl relative">
         {/* Terminal Window */}
         <div className="relative">
@@ -385,7 +433,7 @@ export default function Home() {
               ]}
             mode="rotate"
             blur="strongest"
-            duration= {30}
+            duration={30}
             scale={0.98}
           />
         <div className="bg-card rounded-lg shadow-lg overflow-hidden border border-border relative">
@@ -400,12 +448,22 @@ export default function Home() {
             <div className="text-sm text-muted-foreground font-mono absolute left-1/2 transform -translate-x-1/2">
               {currentStep !== 'initial' ? 'lukehoward.com.au' : 'secure-connection'}
             </div>
-            {/* This empty div balances the layout */}
-            <div className="w-[76px]"></div>
+            {/* Skip control while the intro animation is playing */}
+            <div className="w-[76px] flex justify-end">
+              {introPlaying && (
+                <button
+                  onClick={completeIntro}
+                  className="text-xs font-mono text-muted-foreground hover:text-foreground transition-colors"
+                  aria-label="Skip intro animation"
+                >
+                  skip ▸
+                </button>
+              )}
+            </div>
           </div>
-          
+
           {/* Terminal Content */}
-          <div 
+          <div
             ref={terminalRef}
             className="bg-card p-4 font-mono text-sm h-96 overflow-y-auto text-foreground"
           >
@@ -418,7 +476,7 @@ export default function Home() {
           </div>
         </div>
         </div>
-        
+
         <footer className="mt-8 text-center text-muted-foreground text-sm">
           &copy; {new Date().getFullYear()} Luke Howard. All rights reserved.
         </footer>

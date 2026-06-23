@@ -15,14 +15,46 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const title = "Luke Howard | Founder & Robotics Software Engineer";
+const description =
+  "Founder and full-stack engineer building Lecxa and o1lab. Cross-disciplinary work across AI, robotics, and the web — taking things from zero to one.";
+
 export const metadata: Metadata = {
-  title: "Luke Howard | Founder + Robotics Software Engineer",
-  description: "Cross-disciplinary engineer passionate about AI, web development, and robotics. Explore my portfolio showcasing projects in machine learning, robotics, and full-stack development.",
-  keywords: ["engineer", "AI", "robotics", "web development", "machine learning", "portfolio", "Luke Howard", "Luke Howard Australia", "Luke Howard Developer", "Luke Howard Robotics", "Luke Howard Software Engineer", ""],
+  metadataBase: new URL("https://lukehoward.com.au"),
+  title: {
+    default: title,
+    template: "%s | Luke Howard",
+  },
+  description,
+  keywords: [
+    "Luke Howard",
+    "founder",
+    "software engineer",
+    "robotics",
+    "AI",
+    "machine learning",
+    "full-stack",
+    "Next.js",
+    "Australia",
+    "startups",
+  ],
   authors: [{ name: "Luke Howard" }],
   creator: "Luke Howard",
+  openGraph: {
+    type: "website",
+    locale: "en_AU",
+    url: "https://lukehoward.com.au",
+    siteName: "Luke Howard",
+    title,
+    description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
+  },
   icons: {
-    icon: '/favicon.ico',
+    icon: "/favicon.ico",
   },
 };
 
@@ -32,7 +64,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >

@@ -1,9 +1,8 @@
 "use client";
 
-import React from "react";
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { cn } from "@/lib/utils";
 
 export function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -20,29 +19,22 @@ export function ThemeToggle() {
     setTimeout(() => setIsAnimating(false), 500);
   };
 
-  if (!mounted) return null;
+  // Reserve the same footprint before mount to avoid layout shift (CLS).
+  if (!mounted) {
+    return <div className="w-10 h-10" aria-hidden />;
+  }
 
   const isDark = theme === "dark";
+  const popClass = isAnimating ? "animate-[toggle-pop_0.5s_ease-in-out]" : "";
 
   return (
-    <motion.button
+    <button
       onClick={toggleTheme}
-      className="relative w-10 h-10 rounded-full flex items-center justify-center cursor-pointer"
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.9 }}
+      className="relative w-10 h-10 rounded-full flex items-center justify-center cursor-pointer transition-transform duration-150 hover:scale-110 active:scale-90 motion-reduce:transition-none"
       aria-label={`Switch to ${isDark ? "light" : "dark"} mode`}
     >
-      {/* Light mode icon (sun) */}
-      {!isDark && (
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ 
-            scale: isAnimating ? [1, 1.2, 1] : 1, 
-            opacity: 1 
-          }}
-          transition={{ duration: 0.5 }}
-          className="text-primary"
-        >
+      {!isDark ? (
+        <div className={cn("text-primary", popClass)}>
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="2" />
             <path d="M12 2V4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
@@ -54,20 +46,9 @@ export function ThemeToggle() {
             <path d="M19.7782 19.7782L17.5563 17.5563" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             <path d="M6.44365 6.44365L4.22183 4.22183" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
           </svg>
-        </motion.div>
-      )}
-      
-      {/* Dark mode icon (moon) */}
-      {isDark && (
-        <motion.div
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ 
-            scale: isAnimating ? [1, 1.2, 1] : 1, 
-            opacity: 1 
-          }}
-          transition={{ duration: 0.5 }}
-          className="bg-white rounded-full p-1.5"
-        >
+        </div>
+      ) : (
+        <div className={cn("bg-white rounded-full p-1.5", popClass)}>
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"
@@ -77,8 +58,8 @@ export function ThemeToggle() {
               strokeLinejoin="round"
             />
           </svg>
-        </motion.div>
+        </div>
       )}
-    </motion.button>
+    </button>
   );
 }
